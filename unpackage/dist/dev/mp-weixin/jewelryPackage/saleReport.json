@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "珠宝销售报表",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f9f9f9",
+  "enablePullDownRefresh": true,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "sofar-picker": "/jewelryPackage/sofar-picker",
+    "popwnd-select": "/components/popwnd/popwnd_select_blue"
+  }
+}

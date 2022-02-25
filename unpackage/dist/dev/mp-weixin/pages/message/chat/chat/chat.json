@@ -1,0 +1,13 @@
+{
+  "enablePullDownRefresh": false,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "uni-nav-bar": "/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-nav-bar",
+    "u-icon": "/node-modules/uview-ui/components/u-icon/u-icon",
+    "free-nav-bar": "/common/free-ui/free-nav-bar",
+    "free-icon-button": "/common/free-ui/free-icon-button",
+    "free-chat-item": "/common/free-ui/free-chat-item",
+    "free-popup": "/common/free-ui/free-popup",
+    "free-main-button": "/common/free-ui/free-main-button"
+  }
+}

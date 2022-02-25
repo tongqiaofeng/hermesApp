@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "珠宝成品库存查询",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f9f9f9",
+  "enablePullDownRefresh": true,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "popwnd-select": "/components/popwnd/popwnd_select_blue"
+  }
+}

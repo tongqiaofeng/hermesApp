@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "成品详情",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-swiper-dot": "/uni_modules/uni-swiper-dot/components/uni-swiper-dot/uni-swiper-dot"
+  }
+}

@@ -1,0 +1,1 @@
+<view><view><block wx:for="{{chatlist}}" wx:for-item="item" wx:for-index="index" wx:key="index"><block wx:if="{{chatlist}}"><block><free-media-list vue-id="{{'6bd81dc6-1-'+index}}" item="{{item}}" index="{{index}}" bind:__l="__l"></free-media-list></block></block></block></view></view>

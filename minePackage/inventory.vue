@@ -1,0 +1,557 @@
+<template>
+	<view class="content">
+		<popwndSelect :visible.sync="bShowUser" strTitle="请选择用户" :lst="usersList" strName="username" :sel="userIdx"
+			@confirm="userChange"></popwndSelect>
+		<popwndSelect :visible.sync="bShowStock" strTitle="请选择地点" :lst="stocks" :sel="stockIdx" @confirm="stockChange">
+		</popwndSelect>
+		<popwndSelect :visible.sync="bShowState" strTitle="请选择状态" :lst="states" strName="name" :sel="stateIdx"
+			@confirm="stateChange"></popwndSelect>
+		<view class="inventory-top">
+			<view :style="{ height: height + 'px' }"></view>
+			<!--  #ifdef  MP-WEIXIN -->
+			<view class="mine-title">
+				<image @click="goBack" style="width: 17rpx; height: 30rpx" src="../static/imgs/common/back.png"
+					mode="aspectFill"></image>
+				<input class="search-input" type="text" v-model="keyWord" placeholder="搜索"
+					placeholder-style="color: #7b7b7b;font-size: 24rpx;" @input="inputChange" />
+			</view>
+			<!--  #endif -->
+			<!--  #ifndef  MP-WEIXIN -->
+			<uni-search-bar v-model="keyWord" placeholder="搜索" @input="inputChange" cancelButton="none" />
+			<!--  #endif -->
+			<view class="inputs">
+				<view class="item" style="flex: 1">
+					<view class="item-title">用户</view>
+					<view class="clrGray" style="flex: 1" @click="bShowUser = true">
+						<text v-if="usersList.length !== 0">{{
+              usersList[userIdx].username
+            }}</text>
+						<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+					</view>
+				</view>
+				<view class="line"></view>
+				<view class="item" style="flex: 1">
+					<view class="item-title">库存地点</view>
+					<view class="clrGray" style="flex: 1" @click="bShowStock = true">
+						<text>{{ stocks[stockIdx] }}</text>
+						<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+					</view>
+				</view>
+				<view class="line"></view>
+				<view class="item" style="flex: 1">
+					<view class="item-title">状态</view>
+					<view class="clrGray" style="flex: 1" @click="bShowState = true">
+						<text>{{ states[stateIdx].name }}</text>
+						<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view v-if="haveData == 0" class="no-data">
+			<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
+			<text style="font-size: 30rpx">暂无数据~</text>
+		</view>
+		<view v-else class="inventory-main">
+			<view class="inventory-num">
+				<view>共查询到{{ total }}件商品<text v-if="stateIdx == 0">：其中可售{{ sold1Total }}件，预留{{ reserveNum }}件，已售{{
+              soldNum
+            }}件</text>
+				</view>
+			</view>
+			<view class="plantList">
+				<view v-for="(item, index) in list" :key="index" class="plant">
+					<view @click="checkDetails(item)">
+						<view class="item">
+							<view class="row">
+								<image class="img" :src="item.pic.trim()" mode="aspectFill">
+								</image>
+								<view style="flex: 1">
+									<view class="every-name">
+										<view class="bh">{{ item.name }}</view>
+										<view v-if="stateIdx == 0" :style="{
+                        color: getSaleStateClr(item),
+                        'font-size': '28rpx',
+                        'margin-left': '15rpx',
+                      }">
+											{{ getSaleState(item) }}
+										</view>
+									</view>
+									<view style="margin: 10rpx 0 20rpx 0; font-size: 26rpx">货号: {{ item.productCode }}
+									</view>
+									<view class="cs" v-if="item.sold == 0">成本价:
+										{{ getPrice(item.hkdCost, "HKD") }}
+									</view>
+									<view v-if="item.sold == 1">
+										<view class="cs">入库时间: {{ item.createTime }} 【{{
+                        item.stockLoc
+                      }}】</view>
+									</view>
+									<view v-else-if="item.sold == 3 || item.sold == 4">
+										<view v-if="item.sold == 3 || item.sold == 4" class="cs">客户名称:
+											{{ item.customer }}
+										</view>
+										<view v-if="item.sold == 3 || item.sold == 4" class="cs">销售时间:
+											{{ item.soldTime }}
+										</view>
+									</view>
+								</view>
+							</view>
+							<view v-if="item.sold == 1">
+								<view class="line"></view>
+								<view class="price">
+									<view style="width: 50%">成本价: {{ getPrice(item.hkdCost, "HKD") }}</view>
+									<view style="width: 50%; text-align: right">同行价:
+										{{ getPrice(item.hkdPricePeer, "HKD") }}
+									</view>
+									<view style="width: 50%" class="price-every">散客价:
+										{{ getPrice(item.hkdPriceIndi, "HKD") }}
+									</view>
+								</view>
+							</view>
+							<view v-if="item.sold == 2 || item.sold == 3 || item.sold == 4">
+								<view class="line"></view>
+								<view class="price">
+									<view style="width: 50%">成本价: {{ getPrice(item.hkdCost, "HKD") }}</view>
+									<view style="width: 50%; text-align: right">销售价:
+										{{ getPrice(item.hkdPriceTran, "HKD") }}
+									</view>
+									<view style="width: 50%" class="price-every">利润:
+										{{ getPrice(item.hkdPriceTran - item.hkdCost, "HKD") }}
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import popwndSelect from "@/components/popwnd/popwnd_select_blue.vue";
+	export default {
+		components: {
+			popwndSelect,
+		},
+		data() {
+			return {
+				haveData: 1,
+				height: null,
+				keyWord: "",
+				page: 1,
+
+				bShowUser: false,
+				userIdx: 0,
+				usersList: [],
+
+				bShowStock: false,
+				stockIdx: 0,
+				stocks: [],
+
+				bShowState: false,
+				stateIdx: 2,
+				states: [{
+						id: -1,
+						name: "全部",
+					},
+					{
+						id: 0,
+						name: "采购中",
+					},
+					{
+						id: 1,
+						name: "存货",
+					},
+					{
+						id: 2,
+						name: "客人预留",
+					},
+					{
+						id: 3,
+						name: "已出售",
+					},
+				],
+
+				list: [],
+				total: 0,
+				sold1Total: 0,
+				reserveNum: 0,
+				soldNum: 0,
+
+				haveMore: 0,
+			};
+		},
+		onLoad() {
+			// 获取手机状态栏高度
+			uni.getSystemInfo({
+				success: (data) => {
+					// 将其赋值给this
+					this.height = data.statusBarHeight;
+				},
+			});
+
+			this.stateIdx = 2;
+
+			if (this.list.length == 0 && uni.getStorageSync("token").length > 0) {
+				console.log("重新获取数据");
+				this.getUserList();
+				this.getStockList();
+			}
+		},
+		onPullDownRefresh() {
+			uni.showLoading({
+				title: "正在刷新",
+			});
+			console.log("获取数据");
+			this.page = 1;
+			this.list = [];
+			this.haveMore = 0;
+			this.getUserList();
+			this.getStockList();
+			uni.stopPullDownRefresh();
+		},
+		onReachBottom() {
+			if (this.haveMore == 0) {
+				this.page++;
+				this.search();
+			}
+		},
+		methods: {
+			// 查询商品
+			search() {
+				uni.showLoading({
+					title: "加载中...",
+				});
+				this.soldNum = 0;
+				this.reserveNum = 0;
+				let data = {};
+				data = {
+					keyword: this.keyWord.trim(),
+					userId: 0,
+					page: this.page,
+					pageNum: 10,
+				};
+
+				if (uni.getStorageSync("role") == "peer") {
+					data.userId = 0;
+				} else {
+					data.userId = this.usersList[this.userIdx].id;
+				}
+
+				if (this.stateIdx > 0) data.sold = this.states[this.stateIdx].id;
+
+				if (this.stockIdx > 0) data.stockLoc = this.stocks[this.stockIdx];
+
+				uni.request({
+					url: this.$baseFileUrl + "/stockSearch",
+					method: "POST",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					data: data,
+					complete: (ret) => {
+						uni.hideLoading();
+						if (this.checkBack(ret) == false) return;
+
+						this.total = ret.data.total;
+						this.sold1Total = ret.data.sold1Total;
+						this.reserveNum = ret.data.sold2Total;
+						this.soldNum = ret.data.soldTotal;
+						if (ret.data.list.length == 0) {
+							this.haveMore = 1;
+						} else {
+							let data = this.list.concat(ret.data.list);
+							this.list = data;
+						}
+
+						if (this.list.length == 0) {
+							this.haveData = 0;
+							uni.showToast({
+								icon: "none",
+								title: "暂无数据",
+							});
+						} else {
+							this.haveData = 1;
+						}
+					},
+				});
+			},
+			// 获取库存地列表
+			getStockList() {
+				uni.request({
+					url: this.$baseFileUrl + "/stockLocList",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					data: {},
+					complete: (ret) => {
+						uni.hideLoading();
+						if (this.checkBack(ret, true) == false) return;
+						if (ret.data.length > 0) this.stocks = ret.data;
+					},
+				});
+			},
+			// 获取用户列表
+			getUserList() {
+				uni.request({
+					url: this.$baseFileUrl + "/userList",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					data: {},
+					complete: (ret) => {
+						uni.hideLoading();
+						if (this.checkBack(ret, true) == false) return;
+						if (ret.data.length > 0) this.usersList = ret.data;
+						console.log("用户");
+						console.log(this.usersList);
+
+						this.search();
+					},
+				});
+			},
+			// 模糊搜索
+			inputChange() {
+				this.page = 1;
+				this.list = [];
+				this.haveMore = 0;
+				this.search();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			// 用户变化
+			userChange(e) {
+				this.userIdx = e.sel;
+				this.page = 1;
+				this.list = [];
+				this.haveMore = 0;
+				this.search();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			// 库存地变化
+			stockChange(e) {
+				this.stockIdx = e.sel;
+				this.page = 1;
+				this.list = [];
+				this.haveMore = 0;
+				this.search();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			// 库存状态变化
+			stateChange(e) {
+				this.stateIdx = e.sel;
+				this.page = 1;
+				this.list = [];
+				this.haveMore = 0;
+				this.search();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			// 不同状态颜色
+			getSaleStateClr(item) {
+				if (item.sold == 0) return "#54b7eb";
+				else if (item.sold == 1) return "#6bcda5";
+				else if (item.sold == 2) return "#ff8b62";
+				else if (item.sold == 3) return "#ef5b5b";
+				else return "#ef5b5b";
+			},
+			// 商品状态
+			getSaleState(item) {
+				for (let i = 0; i < this.states.length; ++i) {
+					if (item.sold == this.states[i].id) return this.states[i].name;
+					else if (item.sold == 4) return "已售";
+				}
+				return "";
+			},
+			// 查看包包详情
+			checkDetails(item) {
+				uni.navigateTo({
+					url: "../minePackage/details?id=" + item.id,
+				});
+			},
+			// 返回上一层
+			goBack() {
+				uni.navigateBack({
+					delta: 1,
+				});
+			},
+		},
+	};
+</script>
+
+<style lang="scss" scoped>
+	.content {
+		min-height: 100vh;
+		background-color: #f9f9f9;
+
+		.inventory-top {
+			padding-bottom: 26rpx;
+			position: fixed;
+			top: var(--window-top);
+			left: 0;
+			right: 0;
+			z-index: 99;
+			background-color: #fff;
+
+			.top-input,
+			.item {
+				padding: 0 30rpx;
+			}
+
+			.mine-title {
+				height: 44px;
+				padding: 0 40rpx;
+				display: flex;
+				align-items: center;
+
+				.search-input {
+					width: 400rpx;
+					padding: 10rpx 20rpx;
+					margin-left: 20rpx;
+					background-color: #f6f6f6;
+					border-radius: 30px;
+					text-align: center;
+					font-size: 24rpx;
+				}
+			}
+
+			.inputs {
+				margin-top: 40rpx;
+
+				.item {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+
+					.item-title {
+						font-size: 28rpx;
+						color: #565656;
+						font-weight: bold;
+					}
+
+					.clrGray {
+						display: flex;
+						justify-content: flex-end;
+						align-items: center;
+
+						text {
+							font-size: 28rpx;
+							color: #c8c8c8;
+						}
+
+						image {
+							width: 44rpx;
+							height: 44rpx;
+							margin-left: 30rpx;
+						}
+					}
+				}
+
+				.line {
+					width: 100%;
+					height: 2rpx;
+					margin-top: 26rpx;
+					margin-bottom: 26rpx;
+					background-color: #f9f9f9;
+				}
+			}
+		}
+
+		.inventory-main {
+			margin-top: 30rpx;
+			/*#ifdef MP-WEIXIN*/
+			padding: 460rpx 30rpx 30rpx;
+			/*#endif*/
+			/*#ifndef MP-WEIXIN*/
+			padding: 400rpx 30rpx 30rpx;
+			/*#endif*/
+
+			.inventory-num {
+				margin-bottom: 20rpx;
+				font-size: 22rpx;
+				color: #aaa;
+			}
+
+			.plantList {
+				.plant {
+					margin-bottom: 30rpx;
+					padding: 20rpx 20rpx 30rpx;
+					border-radius: 30rpx;
+					position: relative;
+					background-color: #ffffff;
+					font-size: 26rpx;
+
+					.item {
+						.every-name {
+							width: 100%;
+							display: flex;
+							justify-content: space-between;
+
+							.bh {
+								width: 350rpx;
+								flex: 1;
+								overflow: hidden;
+								word-break: keep-all;
+								white-space: nowrap;
+								text-overflow: ellipsis;
+								font-size: 28rpx;
+								font-weight: bold;
+								color: #000;
+							}
+						}
+
+						.row {
+							display: flex;
+							// justify-content: space-between;
+							align-items: center;
+							color: #999999;
+
+							.img {
+								width: 166rpx;
+								height: 168rpx;
+								margin-right: 20rpx;
+								border-radius: 30rpx;
+							}
+
+							.cs {
+								font-size: 22rpx;
+							}
+						}
+					}
+
+					.line {
+						width: 100%;
+						height: 2rpx;
+						margin: 30rpx 0;
+						background-color: #f9f9f9;
+					}
+
+					.price {
+						display: flex;
+						justify-content: space-between;
+						flex-wrap: wrap;
+						font-size: 26rpx;
+
+						.price-every {
+							margin-top: 20rpx;
+						}
+					}
+				}
+			}
+		}
+	}
+</style>

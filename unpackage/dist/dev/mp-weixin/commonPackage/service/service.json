@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "联系客服",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f9f9f9",
+  "usingComponents": {
+    "free-media-list": "/commonPackage/free-ui/free-media-list",
+    "free-popup": "/commonPackage/free-ui/free-popup",
+    "free-avater": "/commonPackage/free-ui/free-avater"
+  }
+}
