@@ -59,7 +59,7 @@
 				<image src="../static/imgs/common/update.png" mode="aspectFit" @click="updatePsw">
 				</image>
 			</view>
-			<navigator url="../pages/mine/login" hover-class="none" class="login-bottom">
+			<navigator url="./login" hover-class="none" class="login-bottom">
 				<text type="default">返回登录</text>
 			</navigator>
 		</view>

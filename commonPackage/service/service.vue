@@ -1,63 +1,40 @@
 <template>
-	<view>
-		<view v-if="type == -1" style="font-size: 30rpx; text-align: center;margin-top: 300rpx;">请先登录后再使用此功能</view>
-		<view v-else-if="type == 0" class="userList" v-for="(user, index) in userList" :key="index">
-			<navigator :url="'../../pages/message/chat?id=' + user.id + '&name=' + user.nick">
-				<view class="user">
-					<image class="head" :src="user.headPic ? baseFileUrl + '/file/' + user.headPic : '../../static/imgs/mine/avatar.png'" mode="aspectFill"></image>
-					<view class="name">{{user.nick ? user.nick : '客服' + user.id}}</view>
-				</view> 
-			</navigator>
-		</view>
-		<view v-else class="service-container">
-			<!-- 联系客服 -->
-			<view class="" v-for="(item,index) in serviceMsg" :key="index">
-				<view class="every-loc">
-					{{item.loc}}
+	<view class="service-container">
+		<!-- 联系客服 -->
+		<view class="" v-for="(item,index) in serviceMsg" :key="index">
+			<view class="every-loc">
+				{{item.loc}}
+			</view>
+			<view class="msg-every" v-for="(items,index2) in dataFilter(item)" :key="index2">
+				<view class="every-left">
+					<image :src="imgSel(items)" mode="aspectFill"></image>
+					<text class="font-one">{{items.split(":")[1]}}</text>
 				</view>
-				<view class="msg-every" v-for="(items,index2) in dataFilter(item)" :key="index2">
-					<view class="every-left">
-						<image :src="imgSel(items)" mode="aspectFill"></image>
-						<text class="font-one">{{items.split(":")[1]}}</text>
-					</view>
-					<text class="copyButton" @click="copy(items)">复制</text>
-				</view>
+				<text class="copyButton" @click="copy(items)">复制</text>
 			</view>
 		</view>
 	</view>
 </template>
+
 <script>
 	export default {
-			data() {
+		data() {
 			return {
-				baseFileUrl: this.$baseFileUrl,
-				userList: [], 
-				
-				type:-1,
-				
 				img1: require("../../static/imgs/service/WeChat.png"),
 				img2: require("../../static/imgs/service/WhatsApp.png"),
 				img3: require("../../static/imgs/service/Instagram.png"),
+				id: "",
 				serviceMsg: ""
 			}
 		},
-		onLoad() {
-			let userId = getApp().globalData.userInfo.userId;
-			if(userId == 0 ){
-				this.type = -1;
+		onLoad(option) {
+			if (option.id) {
+				this.id = option.id;
+			} else {
+				this.id = "";
 			}
-			else if(userId == 19){
-				this.type = 1;
-				this.getService();
-			}
-			else{
-				this.getNewService();
-			}
-		},
-		onShow() {
-		},
-		onReady(){
-			this.hidePageNavInWechatBrowser();
+
+			this.getService();
 		},
 		methods: {
 			dataFilter(item){
@@ -66,7 +43,7 @@
 			// 获取联系方式
 			getService() {
 				uni.request({
-					url: this.$baseUrl + "/contactGet?id=" + '0',
+					url: this.$baseUrl + "/contactGet?id=" + this.id,
 					header: {
 						"content-type": "application/json",
 						token: uni.getStorageSync('token')
@@ -75,28 +52,8 @@
 						console.log('联系方式');
 						console.log(res);
 						this.serviceMsg = res.data;
-						this.type = 1;
 					}
 				})
-			},
-			getNewService(){
-				uni.request({
-					method: 'GET', 
-					url: this.$baseUrl + '/newContactGet',
-					header: {
-						"content-type": "application/json"
-					},
-					success: (res) => {
-						let userList = res.data;
-						if(userList){
-							this.type = 0;
-							this.userList = res.data;
-						}
-						else{
-							this.getService();
-						}
-						
-				}})
 			},
 			// 复制
 			copy(item) {
@@ -131,31 +88,11 @@
 						break;
 				}
 			},
-		}
+		},
 	}
 </script>
+
 <style lang="scss" scoped>
-	.userList{
-		
-		.user{
-			display: flex;
-			align-items: center;
-			border-bottom: 1rpx solid #F0F0F0;
-			padding: 20rpx;
-			
-			.head{
-				width: 80rpx;
-				height: 80rpx;
-				margin: 0rpx 30rpx;
-				border-radius: 80rpx;
-			}
-			
-			.name{
-				font-size: 30rpx;
-			}
-		}
-	}
-	
 	.service-container {
 		padding: 30rpx;
 		padding-top: 0;
@@ -165,7 +102,7 @@
 			padding-bottom: 20rpx;
 			font-size: 30rpx;
 		}
-	
+
 		.msg-every {
 			height: 88rpx;
 			padding-right: 20rpx;
@@ -175,23 +112,23 @@
 			align-items: center;
 			background-color: #f9f9f9;
 			border-radius: 20rpx;
-	
+
 			.every-left {
 				display: flex;
 				align-items: center;
-	
+
 				image {
 					width: 56rpx;
 					height: 56rpx;
 					margin: 0 20rpx;
 				}
-	
+
 				.font-one {
 					font-size: 30rpx;
 					color: #303030;
 				}
 			}
-	
+
 			.copyButton {
 				margin-left: 30rpx;
 				font-size: 26rpx;

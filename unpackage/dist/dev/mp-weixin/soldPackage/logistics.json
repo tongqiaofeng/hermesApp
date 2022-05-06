@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "物流详情",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f9f9f9",
+  "usingComponents": {
+    "uni-steps": "/uni_modules/uni-steps/components/uni-steps/uni-steps"
+  }
+}

@@ -40,7 +40,7 @@
 						</view>
 					</view>
 				</uni-forms-item>
-				<!-- <uni-forms-item name="password">
+				<uni-forms-item name="password">
 					<view class="register-every">
 						<text class="every-font" :style="{color: plurSelect == 4 ? '#000' : '#c3c3c3'}">密码</text>
 						<input class="every-input" placeholder="请输入6-14位密码" placeholder-style="color: #dadada;"
@@ -48,7 +48,7 @@
 						<view class="every-line" :style="{backgroundColor: plurSelect == 4 ? '#85dbd0' : '#ebebeb'}">
 						</view>
 					</view>
-				</uni-forms-item> -->
+				</uni-forms-item>
 			</uni-forms>
 		</view>
 		<view class="register-button">
@@ -70,7 +70,7 @@
 					nick: "",
 					phoneNumber: "",
 					code: "",
-					// password: "",
+					password: "",
 				},
 				registerRules: {
 					nick: {
@@ -94,12 +94,12 @@
 							trigger: "blur",
 						}, ],
 					},
-					// password: {
-					// 	rules: [{
-					// 		required: true,
-					// 		errorMessage: "请输入6-14位密码",
-					// 	}, ],
-					// },
+					password: {
+						rules: [{
+							required: true,
+							errorMessage: "请输入6-14位密码",
+						}, ],
+					},
 				},
 				time: '获取验证码',
 				count: 59,

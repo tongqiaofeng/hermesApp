@@ -12,12 +12,22 @@
 		<view class="inventory-top">
 			<view :style="{ height: height + 'px' }"></view>
 			<!--  #ifdef  MP-WEIXIN -->
-			<view class="mine-title">
-				<image @click="goBack" style="width: 17rpx; height: 30rpx" src="../static/imgs/common/back.png"
-					mode="aspectFill"></image>
-				<input class="search-input" type="text" v-model="keyWord" placeholder="搜索"
-					placeholder-style="color: #7b7b7b;font-size: 24rpx;" @input="inputChange" />
-			</view>
+			  <view class="mine-title">
+				<image
+				  @click="goBack"
+				  style="width: 17rpx; height: 30rpx"
+				  src="../static/imgs/common/back.png"
+				  mode="aspectFill"
+				></image>
+				<input
+				  class="search-input"
+				  type="text"
+				  v-model="keyWord"
+				  placeholder="搜索"
+				  placeholder-style="color: #7b7b7b;font-size: 24rpx;"
+				  @input="inputChange"
+				/>
+			  </view>
 			<!--  #endif -->
 			<!--  #ifndef  MP-WEIXIN -->
 			<uni-search-bar v-model="keyWord" placeholder="搜索" @input="inputChange" cancelButton="none" />
@@ -34,9 +44,7 @@
 				<view class="item" style="flex: 1">
 					<view class="item-title">裸石类型</view>
 					<view class="clrGray" style="flex: 1" @click="bShowMaterial = true">
-						<text v-if="materialModelList.length !== 0">{{
-              materialModelList[materialIdx].name
-            }}</text>
+						<text v-if="materialModelList.length !== 0">{{ materialModelList[materialIdx].name }}</text>
 						<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
 					</view>
 				</view>
@@ -55,12 +63,12 @@
 							<text class="every-font" :style="{ color: sortType == 1 ? '#000' : '#c3c3c3' }">时间</text>
 							<view class="every-img">
 								<image :src="
-                    sortType == 1 && isUp == 1
-                      ? img1
-                      : sortType == 1 && isUp == 2
-                      ? img2
-                      : img3
-                  " mode="aspectFit"></image>
+					      sortType == 1 && isUp == 1
+					        ? img1
+					        : sortType == 1 && isUp == 2
+					        ? img2
+					        : img3
+					    " mode="aspectFit"></image>
 							</view>
 						</view>
 						<view class="filter-line" v-if="sortType == 1"></view>
@@ -120,7 +128,8 @@
 		</view>
 		<view v-else class="inventory-main">
 			<view class="inventory-num">
-				<view>共查询到{{ total }}件商品 </view>
+				<view>共查询到{{ total }}件商品</text>
+				</view>
 			</view>
 			<view class="plantList">
 				<view v-for="(item, index) in list" :key="index" class="plant">
@@ -133,14 +142,11 @@
 								<view>
 									<view class="bh" v-if="materialIdx == 0">{{ item.materialName }}</view>
 									<view class="product-number">编号：{{item.productNumber}}</view>
-
+									
 									<view style="display: flex; justify-content: space-between; align-items: center;">
 										<view>
-											<view class="cs" v-if="item.unitPrice"
-												:style="{color: sortType == 2 ? '#000000' : '#999999'}">
-												单价：{{item.currency + ' ' + formatNumberRgx(item.unitPrice) }}</view>
-											<view class="cs" v-if="item.unitPrice"
-												:style="{color: sortType == 3 ? '#000000' : '#999999'}">
+											<view class="cs" v-if="item.unitPrice" :style="{color: sortType == 2 ? '#000000' : '#999999'}">单价：{{item.currency + ' ' + formatNumberRgx(item.unitPrice) }}</view>
+											<view class="cs" v-if="item.unitPrice"  :style="{color: sortType == 3 ? '#000000' : '#999999'}">
 												总价：{{item.chargeUnit == '粒' || item.chargeUnit == '件' ? item.currency + ' ' + formatNumberRgx(parseInt(item.unitPrice*item.number)) : item.currency + ' ' + formatNumberRgx(parseInt(item.unitPrice*item.weight))}}
 											</view>
 											<view class="cs" v-if="item.color">颜色：{{ item.color }}</view>
@@ -149,13 +155,9 @@
 											<view class="cs" v-if="item.shape">形状：{{ item.shape }}</view>
 											<view class="cs" v-if="item.size">尺寸：{{ item.size }}</view>
 											<view class="cs" v-if="stockIdx == 0">位置：{{ item.storageName }}</view>
-											<view class="cs" v-if="item.weight > 0"
-												:style="{color: sortType == 4 ? '#000000' : '#999999'}">
-												重量：{{ item.weight + ' ' + item.chargeUnit }}</view>
-											<view class="cs" v-if="item.weight == 0">
-												数量：{{ item.number + ' ' + item.chargeUnit }}</view>
-											<view class="cs" v-else-if="item.number > 1">数量：{{ item.number + ' 粒' }}
-											</view>
+											<view class="cs" v-if="item.weight > 0" :style="{color: sortType == 4 ? '#000000' : '#999999'}">重量：{{ item.weight + ' ' + item.chargeUnit }}</view>
+											<view class="cs" v-if="item.weight == 0">数量：{{ item.number + ' ' + item.chargeUnit }}</view>
+											<view class="cs" v-else-if="item.number > 1">数量：{{ item.number + ' 粒' }}</view>
 										</view>
 										<view>
 											<view v-if="stateIdx> 0" :style="{
@@ -170,8 +172,8 @@
 											<view class=""></view>
 										</view>
 									</view>
-
-
+									
+									
 								</view>
 							</view>
 						</view>
@@ -214,7 +216,7 @@
 					},
 					{
 						id: 0,
-						name: "存货",
+						name: "库存中",
 					},
 					{
 						id: 1,
@@ -251,12 +253,12 @@
 		onLoad() {
 			// 获取手机状态栏高度
 			uni.getSystemInfo({
-				success: (data) => {
-					// 将其赋值给this
-					this.height = data.statusBarHeight;
-				},
+			  success: (data) => {
+			    // 将其赋值给this
+			    this.height = data.statusBarHeight;
+			  },
 			});
-
+			
 			this.stockIdx = 0;
 			this.materialIdx = 0;
 			this.stateIdx = 3;
@@ -470,9 +472,9 @@
 			},
 			// 返回上一层
 			goBack() {
-				uni.navigateBack({
-					delta: 1,
-				});
+			  uni.navigateBack({
+			    delta: 1,
+			  });
 			},
 		},
 	};
@@ -496,22 +498,22 @@
 			.item {
 				padding: 0 30rpx;
 			}
-
+			
 			.mine-title {
-				height: 44px;
-				padding: 0 40rpx;
-				display: flex;
-				align-items: center;
-
-				.search-input {
-					width: 400rpx;
-					padding: 10rpx 20rpx;
-			  margin-left: 20rpx;
-					background-color: #f6f6f6;
-					border-radius: 30px;
-					text-align: center;
-			  font-size: 24rpx;
-				}
+			  height: 44px;
+			  padding: 0 40rpx;
+			  display: flex;
+			  align-items: center;
+			
+			  .search-input {
+			    width: 400rpx;
+			    padding: 10rpx 20rpx;
+			    margin-left: 20rpx;
+			    background-color: #f6f6f6;
+			    border-radius: 30px;
+			    text-align: center;
+			    font-size: 24rpx;
+			  }
 			}
 
 			.inputs {
@@ -606,7 +608,7 @@
 			}
 
 			.plantList {
-
+				
 
 				.plant {
 					margin-bottom: 30rpx;
@@ -641,14 +643,14 @@
 								margin-right: 20rpx;
 								border-radius: 30rpx;
 							}
-
+							
 							.product-number {
 								color: #999999;
 								overflow: hidden;
 								word-break: keep-all;
 								white-space: nowrap;
 								text-overflow: ellipsis;
-
+								
 								width: 450rpx;
 							}
 

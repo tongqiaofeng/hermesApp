@@ -7,32 +7,28 @@
 		<view v-else>
 			<view class="title">
 				<text>{{ "共" + goodsnum + "件商品" }}</text>
-				<text style="font-size: 26rpx" @click="isCheckBox">编辑</text>
+				<text style="font-size: 26rpx;" @click="isCheckBox">编辑</text>
 			</view>
-			<checkbox-group @change="checkChange" style="padding-top: 120rpx">
+			<checkbox-group @change="checkChange" style="padding-top: 120rpx;">
 				<view class="commoditybox" v-for="(item, index) in favoriteslist" :key="index">
 					<label v-show="isSelect == 1" class="box-check">
 						<checkbox :value="item.id" :checked="item.checked" color="#85dbd0"
-							style="transform: scale(0.7); border-radius: 50%" />
+							style="transform: scale(0.7);border-radius: 50%;" />
 					</label>
-					<view class="box-left" v-if="item.type == 0" @click="navto(item)">
-						<image v-if="item.img" :src="item.img.trim()" mode="aspectFill"></image>
+					<view class="box-left" @click="navto(item.id)">
+						<image v-if="item.pics" :src="item.pics.trim()" mode="aspectFill"></image>
 					</view>
-					<view class="box-left" v-if="item.type == 1" @click="navto(item)">
-						<image v-if="item.img" :src="imgUrl + '/file/small/' + item.img.trim()" mode="aspectFill">
-						</image>
-					</view>
-					<view class="box-right" @click="navto(item)">
-						<view class="name">{{ item.name }}</view>
+					<view class="box-right" @click="navto(item.id)">
+						<view class="name">{{ item.model + " " + item.size }}</view>
 						<view class="price">
-							{{ item.adviseSellPrice == 0 ? '价格请咨询客服' : item.currency + " " + formatNumberRgx(item.adviseSellPrice) }}
+							{{item.currency +" " +formatNumberRgx(item.hkdPriceIndi)}}
 						</view>
 					</view>
-					<view class="closeicon" v-if="item.sold == 1">
+					<view class="closeicon" v-if="item.sold == 3 || item.sold == 4">
 						<image src="../static/imgs/common/sold.png" mode="aspectFill"></image>
 					</view>
 					<view class="delIcon">
-						<image src="../static/imgs/collect/del.png" mode="aspectFill" @click="bindClick(item)">
+						<image src="../static/imgs/collect/del.png" mode="aspectFill" @click="bindClick(item.id)">
 						</image>
 					</view>
 				</view>
@@ -59,7 +55,6 @@
 	export default {
 		data() {
 			return {
-				imgUrl: this.$baseJewelleryUrl,
 				haveData: 1,
 				goodsnum: 0,
 				page: 1,
@@ -73,18 +68,15 @@
 				selList: [],
 
 				options: [{
-					text: "删除",
+					text: '删除',
 					style: {
-						backgroundColor: "#dd524d",
-					},
-				}, ],
+						backgroundColor: '#dd524d'
+					}
+				}]
 			};
 		},
 		onLoad() {
 			this.favorites();
-		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
 		},
 		onPullDownRefresh() {
 			this.favoriteslist = [];
@@ -95,10 +87,7 @@
 			bindClick(e) {
 				console.log(e);
 				this.selList = [];
-				this.selList.push({
-					id: e.id,
-					type: e.type,
-				});
+				this.selList.push(e);
 				this.clickclose();
 			},
 			// 是否选中
@@ -107,14 +96,10 @@
 				console.log(e);
 
 				let values = e.detail.value;
-				this.selList = [];
+				this.selList = values;
 				for (let i = 0; i < this.favoriteslist.length; ++i) {
 					const item = this.favoriteslist[i];
 					if (values.includes(item.id)) {
-						this.selList.push({
-							id: item.id,
-							type: item.type,
-						});
 						this.$set(item, "checked", true);
 					} else {
 						this.$set(item, "checked", false);
@@ -138,10 +123,7 @@
 				} else {
 					this.favoriteslist.map((item) => {
 						this.$set(item, "checked", true);
-						this.selList.push({
-							id: item.id,
-							type: item.type,
-						});
+						this.selList.push(item.id);
 					});
 					this.$set(this.allFlag, "checked", true);
 				}
@@ -158,8 +140,8 @@
 			// 获取商品收藏列表
 			favorites() {
 				uni.showLoading({
-					title: "加载中...",
-				});
+					title:"加载中..."
+				})
 				uni.request({
 					url: this.$baseFileUrl + "/favorites/?page=1",
 					header: {
@@ -168,16 +150,16 @@
 					},
 					complete: (res) => {
 						uni.hideLoading();
-
+						
 						console.log("商品收藏列表");
 						console.log(res.data);
-
+						
 						this.favoriteslist = res.data.list;
 						this.goodsnum = res.data.total;
-
-						if (this.favoriteslist.length == 0) {
+						
+						if(this.favoriteslist.length == 0){
 							this.haveData = 0;
-						} else {
+						}else{
 							this.haveData = 1;
 						}
 					},
@@ -185,12 +167,11 @@
 			},
 			// 删除
 			clickclose() {
-				console.log(this.selList);
 				uni.request({
 					method: "POST",
 					url: this.$baseUrl + "/favoriteSave",
 					data: {
-						stockList: this.selList,
+						stockIdList: this.selList,
 					},
 					header: {
 						"content-type": "application/json",
@@ -198,7 +179,6 @@
 					},
 					success: (res) => {
 						console.log(res.data);
-						this.selList = [];
 						this.favoriteslist = [];
 						uni.showToast({
 							title: "删除成功",
@@ -214,19 +194,13 @@
 					},
 				});
 			},
-			navto(item) {
+			navto(id) {
 				if (this.isSelect == 0) {
-					if (item.type == 0) {
-						uni.navigateTo({
-							url: "../minePackage/details?id=" + item.id,
-						});
-					} else if (item.type == 1) {
-						uni.navigateTo({
-							url: "../jewelryPackage/jewelryDetails?id=" + item.id,
-						});
-					}
+					uni.navigateTo({
+						url: "../commonPackage/details?id=" + id,
+					});
 				}
-			},
+			}
 		},
 	};
 </script>
@@ -264,14 +238,16 @@
 			}
 
 			.box-left {
+				width: 180rpx;
+				height: 174rpx;
 				padding: 20rpx 0 20rpx 20rpx;
 				display: flex;
 				justify-content: center;
 				align-items: center;
 
 				image {
-					width: 180rpx;
-					height: 174rpx;
+					width: 100%;
+					height: 100%;
 					border-radius: 30rpx;
 				}
 			}
@@ -279,7 +255,6 @@
 			.box-right {
 				padding: 25rpx 20rpx 30rpx 20rpx;
 				display: flex;
-				flex: 1;
 				flex-direction: column;
 				justify-content: space-between;
 
@@ -326,7 +301,7 @@
 			font-size: 24rpx;
 			color: #e3e3e3;
 			text-align: center;
-			font-size: 30rpx;
+			font-size: 30rpx
 		}
 
 		.allCheck {

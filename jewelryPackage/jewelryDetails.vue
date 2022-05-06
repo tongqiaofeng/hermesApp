@@ -1,22 +1,16 @@
 <template>
 	<view class="details-container">
 		<!-- 珠宝成品详情 -->
-		<view class="">
-			<uni-swiper-dot :info="imgSrc" :current="current" mode="dot" :dotsStyles="dotsStyles">
-				<swiper class="swiper-box" style="height: 750rpx" @change="swiperChange">
-					<swiper-item v-for="(item, index) in imgSrc" :key="index">
-						<view class="swiper-item" @click="imagePreview(index)">
-							<easy-loadimage :image-src="item" :scroll-top="scrollTop" width="750rpx" height="750rpx" mode="aspectFill"></easy-loadimage>
-							<!-- <image :src="item" mode="aspectFill" style="width: 750rpx; height: 750rpx"></image> -->
-						</view>
-					</swiper-item>
-				</swiper>
-			</uni-swiper-dot>
-			<image v-if="current == 0 && jewelryDetails.discount.length > 0" src="../static/imgs/details/discount.png"
-				mode="aspectFill" style="position: absolute; top:42rpx; right: 36rpx; width: 148rpx; height: 148rpx;">
-			</image>
-		</view>
-
+		<uni-swiper-dot :info="imgSrc" :current="current" mode="dot" :dotsStyles="dotsStyles">
+			<swiper class="swiper-box" style="height: 750rpx" @change="swiperChange">
+				<swiper-item v-for="(item, index) in imgSrc" :key="index">
+					<view class="swiper-item" @click="imagePreview(index)">
+						<image :src="item" mode="aspectFill" style="width: 100%; height: 750rpx">
+						</image>
+					</view>
+				</swiper-item>
+			</swiper>
+		</uni-swiper-dot>
 		<view class="img-title" v-if="role == 'admin' && jewelryDetails.designImg">
 			<view class="title-left">
 				<view class="img-line"></view>
@@ -44,33 +38,17 @@
 			</swiper>
 		</uni-swiper-dot>
 		<view class="product-price">
-			<text style="font-size: 22rpx;color: #85dbd0;" v-if="jewelryDetails.sellPrice != 0">
-				CNY<text style="font-size: 36rpx;">{{' ' + formatNumberRgx(jewelryDetails.sellPrice)}}</text>
-			</text>
-			<text style="font-size: 22rpx;color: #85dbd0;" v-else>
-				价格请咨询客服
-			</text>
-			<view class="product-name">
-				<view class="name-one">
-					<text style="flex: 1;">{{jewelryDetails.productName}}</text>
-					<view style="margin-left: 20rpx;" v-if="role == 'admin'">
-						<text>{{jewelryDetails.storageName == '' || jewelryDetails.storageName == null ? '' : jewelryDetails.storageName}}</text>
-					</view>
-					<navigator v-if="role != ''" :url="'../commonPackage/QRCode?id='+jewelryDetails.id">
-						<image src="../static/imgs/details/QRcode.png" mode="aspectFill"
-							style="width: 30rpx; height: 30rpx; margin-left: 20rpx;"></image>
-					</navigator>
+			<text style="font-size: 22rpx;">CNY<text
+					style="font-size: 30rpx;">{{' ' + formatNumberRgx(jewelryDetails.adviseSellPrice)}}</text></text>
+		</view>
+		<view class="product-name">
+			<view class="name-one">
+				<text style="flex: 1;">{{jewelryDetails.productName}}</text>
+				<view style="margin-left: 20rpx;" v-if="role == 'admin'">
+					<text>{{jewelryDetails.storageName == '' || jewelryDetails.storageName == null ? '' : jewelryDetails.storageName}}</text>
 				</view>
 			</view>
 		</view>
-
-		<view v-if="jewelryDetails.discount.length > 0" class="product-parameter">
-			<view class="parameter">优惠</view>
-			<view style="display: flex; flex-wrap: wrap;">
-				<view v-for="(item, index) in jewelryDetails.discount" :key="index" class="discount">{{item}}</view>
-			</view>
-		</view>
-
 		<view class="product-parameter" v-if="role == 'admin'">
 			<view class="parameter">商品信息</view>
 			<view class="parameter-line"></view>
@@ -90,7 +68,7 @@
 				<view v-if="jewelryDetails.certs.length > 0" class="parameter-every infoItem">
 					<view>证书编号：</view>
 					<view class="content">
-						<view v-for="(cert, index) in jewelryDetails.certs" :key="index">
+						<view v-for="(cert, index) in jewelryDetails.certs" :key="index" >
 							<navigator :url="'./materialDetails?productNumber=' + cert">
 								{{ cert }}
 							</navigator>
@@ -152,29 +130,10 @@
 						style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.adviceWholesalePrice)}}</text>
 				</view>
 			</view>
-			<view class="parameter-every" v-if="jewelryDetails.adviseSellPrice">
-				<text>建议零售价</text>
-				<view>
-					<text
-						style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.adviseSellPrice)}}</text>
-				</view>
-			</view>
 			<view class="parameter-every" v-if="jewelryDetails.tagPrice">
 				<text>标签价</text>
 				<view>
 					<text style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.tagPrice)}}</text>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.agentPrice">
-				<text>合伙人价格</text>
-				<view>
-					<text style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.agentPrice)}}</text>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.counterLowestSellPrice">
-				<text style="font-weight: bold; color: #333333;">建议最低售价</text>
-				<view>
-					<text style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.counterLowestSellPrice)}}</text>
 				</view>
 			</view>
 			<view class="parameter-every" v-if="jewelryDetails.saleCommission">
@@ -184,7 +143,7 @@
 				</view>
 			</view>
 			<view class="parameter-every" v-if="jewelryDetails.params">
-				<view style="width: 110px;">参数</view>
+				<view style="width: 80px;">参数</view>
 				<text>{{jewelryDetails.params}}</text>
 			</view>
 			<view class="parameter-every" v-if="jewelryDetails.totalPriceNote">
@@ -194,124 +153,6 @@
 			<view class="parameter-every" v-if="jewelryDetails.note">
 				<view style="width: 110px;">产品备注</view>
 				<view>{{jewelryDetails.note}}</view>
-			</view>
-		</view>
-		<view class="product-parameter" v-else-if="role == 'seller1'">
-			<view class="parameter">商品信息</view>
-			<view class="parameter-line"></view>
-			<view class="parameter-every" v-if="jewelryDetails.productNumber">
-				<text>唯一编号</text>
-				<text>{{jewelryDetails.productNumber}}</text>
-			</view>
-			<view v-if="jewelryDetails.certs">
-				<view v-if="jewelryDetails.certs.length > 0" class="parameter-every infoItem">
-					<view>证书编号：</view>
-					<view class="content">
-						<view v-for="(cert, index) in jewelryDetails.certs" :key="index">
-							<navigator :url="'./materialDetails?productNumber=' + cert">
-								{{ cert }}
-							</navigator>
-						</view>
-					</view>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.adviceWholesalePrice" @touchstart="showPrice2 = true"
-				@touchend="showPrice2 = false">
-				<text>批发价（低于此向上级申请）</text>
-				<view>
-					<text v-if="showPrice2 == true"
-						style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.adviceWholesalePrice)}}</text>
-					<text v-else style="color: #73d1c6;">{{"CNY ******"}}</text>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.agentPrice"  @touchstart="showPrice3 = true"
-				@touchend="showPrice3 = false">
-				<text>合伙人价格</text>
-				<view>
-					<text v-if="showPrice3 == true"
-						style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.agentPrice)}}</text>
-					<text v-else style="color: #73d1c6;">{{"CNY ******"}}</text>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.counterLowestSellPrice" @touchstart="showPrice4 = true"
-				@touchend="showPrice4 = false">
-				<text style="font-weight: bold; color: #333333;">建议最低售价</text>
-				<view>
-					<text v-if="showPrice4 == true"
-						style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.counterLowestSellPrice)}}</text>
-					<text v-else style="color: #73d1c6;">{{"CNY ******"}}</text>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.params">
-				<view style="width: 110px;">参数</view>
-				<text>{{jewelryDetails.params}}</text>
-			</view>
-		</view>
-		<view class="product-parameter" v-else-if="role == 'seller2'">
-			<view class="parameter">商品信息</view>
-			<view class="parameter-line"></view>
-			<view class="parameter-every" v-if="jewelryDetails.productNumber">
-				<text>唯一编号</text>
-				<text>{{jewelryDetails.productNumber}}</text>
-			</view>
-			<view v-if="jewelryDetails.certs">
-				<view v-if="jewelryDetails.certs.length > 0" class="parameter-every infoItem">
-					<view>证书编号：</view>
-					<view class="content">
-						<view v-for="(cert, index) in jewelryDetails.certs" :key="index">
-							<navigator :url="'./materialDetails?productNumber=' + cert">
-								{{ cert }}
-							</navigator>
-						</view>
-					</view>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.counterLowestSellPrice" @touchstart="showPrice1 = true"
-				@touchend="showPrice1 = false">
-				<text>最低价（低于此向上级申请）</text>
-				<view>
-					<text v-if="showPrice1 == true"
-						style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.counterLowestSellPrice)}}</text>
-					<text v-else style="color: #73d1c6;">{{"CNY ******"}}</text>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.params">
-				<view style="width: 110px;">参数</view>
-				<text>{{jewelryDetails.params}}</text>
-			</view>
-		</view>
-		<view class="product-parameter" v-else-if="role == 'agent1'">
-			<view class="parameter">商品信息</view>
-			<view class="parameter-line"></view>
-			<view v-if="jewelryDetails.certs">
-				<view v-if="jewelryDetails.certs.length > 0" class="parameter-every infoItem">
-					<view>证书编号：</view>
-					<view class="content">
-						<view v-for="(cert, index) in jewelryDetails.certs" :key="index">
-							<navigator :url="'./materialDetails?productNumber=' + cert">
-								{{ cert }}
-							</navigator>
-						</view>
-					</view>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.agentPrice" @touchstart="showPrice1 = true"
-				@touchend="showPrice1 = false">
-				<text>合伙人价</text>
-				<view>
-					<text v-if="showPrice1 == true"
-						style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.agentPrice)}}</text>
-					<text v-else style="color: #73d1c6;">{{"CNY ******"}}</text>
-				</view>
-			</view>
-			<view class="parameter-every" v-if="jewelryDetails.counterLowestSellPrice" @touchstart="showPrice2 = true"
-				@touchend="showPrice2 = false">
-				<text >建议最低售价</text>
-				<view>
-					<text v-if="showPrice2 == true"
-						style="color: #73d1c6;">{{"CNY " + formatNumberRgx(jewelryDetails.counterLowestSellPrice)}}</text>
-					<text v-else style="color: #73d1c6;">{{"CNY ******"}}</text>
-				</view>
 			</view>
 		</view>
 		<view class="product-parameter" v-if="jewelryDetails.state == 4 && role == 'admin'">
@@ -346,7 +187,7 @@
 				<text>利润</text>
 				<view>
 					<text
-						style="color: #73d1c6;">{{jewelryDetails.saleCurrency + ' ' + formatNumberRgx(costPrice(jewelryDetails.saleMoney, jewelryDetails.costPrice))}}</text>
+						style="color: #73d1c6;">{{jewelryDetails.saleCurrency + ' ' + formatNumberRgx(jewelryDetails.saleMoney-jewelryDetails.costPrice)}}</text>
 				</view>
 			</view>
 		</view>
@@ -391,13 +232,10 @@
 	export default {
 		data() {
 			return {
-				scrollTop:0,
 				imgUrl: this.$baseJewelleryUrl,
-				role: '',
+				role: uni.getStorageSync("role"),
 				token: uni.getStorageSync("token"),
-				jewelryDetails: {
-					discount: []
-				},
+				jewelryDetails: {},
 				imgSrc: [],
 				imgSrc2: [],
 				imgSrc3: [],
@@ -418,35 +256,21 @@
 				detailId: null,
 				//设置默认的分享参数
 				share: {
-					title: 'PAULIANA 宝莉安娜高级珠宝',
+					title: '包治百病 BZBB.COM',
 					path: "/jewelryPackage/jewelryDetails?id=" + this.detailId,
 					imageUrl: '',
 					desc: '',
 					content: ''
 				},
-				showPrice1: false,
-				showPrice2: false,
-				showPrice3: false,
-				showPrice4: false,
-
 
 			};
 		},
-		async onLoad(option) {
-			await this.$onLaunched;
-			let userPermissions = getApp().globalData.userInfo.userPermissions;
-			if (userPermissions)
-				if (userPermissions.jewelry_user)
-					this.role = userPermissions.jewelry_user.seller;
-			
+
+		onLoad(option) {
+			console.log("详情");
+			console.log(option.id);
 			this.detailId = option.id;
 			this.getDetails();
-		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
-		},
-		onPageScroll(e){
-			this.scrollTop = e.scrollTop;
 		},
 		onPullDownRefresh() {
 			uni.showLoading({
@@ -553,6 +377,7 @@
 					},
 					success: (res) => {
 						uni.hideLoading();
+						console.log("pppp");
 						console.log(res);
 						this.jewelryDetails = res.data.productInfo;
 
@@ -586,7 +411,7 @@
 									this.imgSrc2.push(q[i].trim());
 								}
 							}
-						} 
+						}
 
 						// 详情图
 						this.imgSrc3 = [];
@@ -600,16 +425,7 @@
 								}
 							}
 						}
-						if (this.role == 'admin' || this.role == 'seller1' || this.role == 'seller2' || this.role == 'agent1') {
-							this.imgSrc3.splice(0, 1);
-							if (this.imgSrc3.length > 4) {
-								this.imgSrc3.pop();
-								this.imgSrc3.pop();
-								this.imgSrc3.pop();
-								this.imgSrc3.pop();
-							}
-						}
-
+						
 						//证书
 						this.jewelryDetails.certs = [];
 						let certs = [];
@@ -620,21 +436,6 @@
 							let tmp = certs[i].trim();
 							if (tmp.length > 0) this.jewelryDetails.certs.push(tmp);
 						}
-
-						//证书
-						this.jewelryDetails.discount = [];
-						let discount = [];
-						if (this.jewelryDetails.activityInfo.indexOf(",") > 0)
-							discount = this.jewelryDetails.activityInfo.split(",");
-						else discount = this.jewelryDetails.activityInfo.split("，");
-						for (let i = 0; i < discount.length; ++i) {
-							let tmp = discount[i].trim();
-							if (tmp.length > 0) this.jewelryDetails.discount.push(tmp);
-						}
-						
-						setTimeout(() => {
-							this.scrollTop ++;
-						}, 500) 
 					},
 					fail: (err) => {
 						uni.hideLoading();
@@ -663,15 +464,12 @@
 				} else {
 					console.log('添加与取消收藏');
 					let list = [];
-					list.push({
-						id: this.jewelryDetails.id,
-						type: 1
-					});
+					list.push(this.jewelryDetails.id);
 					uni.request({
 						method: "POST",
-						url: this.$baseUrl + '/favoriteSave',
+						url: this.$baseUrl + '/jewelleryFavoriteSave',
 						data: {
-							stockList: list
+							stockIdList: list
 						},
 						header: {
 							token: uni.getStorageSync('token')
@@ -705,12 +503,13 @@
 		background-color: #f9f9f9;
 
 		.img-title {
-			padding: 20rpx 40rpx;
-			margin-bottom: 10rpx;
+			padding-top: 20rpx;
+			padding-left: 40rpx;
+			padding-right: 40rpx;
+			margin-bottom: 20rpx;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			background-color: #fff;
 
 			.title-left {
 				display: flex;
@@ -743,27 +542,57 @@
 		}
 
 		.product-price {
-			margin-top: 10rpx;
-			padding: 20rpx 40rpx;
+			padding: 26rpx 40rpx;
+			display: flex;
+			align-items: center;
 			text-align: left;
-			background-color: #fff;
+			color: #fff;
+			font-size: 30rpx;
+			background: url(../static/imgs/details/back.png) no-repeat;
+			background-size: 100% 100%;
 
-			.product-name {
-				padding: 16rpx 0rpx 0 0;
-
-				.name-one {
-					display: flex;
-					justify-content: space-between;
-					// align-items: center;
-
-					text {
-						color: #303030;
-						font-size: 30rpx;
-					}
-				}
+			.cny-money {
+				padding: 0 20rpx;
+				margin-left: 10rpx;
+				font-size: 22rpx;
+				background-color: #fff;
+				border-radius: 30rpx;
+				color: #73d1c6;
 			}
 		}
 
+		.product-name {
+			padding: 16rpx 20rpx 16rpx 40rpx;
+			background-color: #fff;
+
+			.name-one {
+				display: flex;
+				justify-content: space-between;
+				// align-items: center;
+
+				text {
+					color: #303030;
+					font-size: 26rpx;
+					font-weight: bold;
+				}
+
+				image {
+					width: 42rpx;
+					height: 27rpx;
+					margin-top: 4rpx;
+				}
+			}
+
+			.name-two {
+				margin-top: 20rpx;
+				color: #808080;
+				font-size: 24rpx;
+
+				text {
+					margin-right: 16rpx;
+				}
+			}
+		}
 
 		.product-parameter {
 			margin-top: 20rpx;
@@ -783,7 +612,7 @@
 				background-color: #f9f9f9;
 				border-radius: 5px;
 			}
-
+			
 			.infoItem {
 				.content {
 					flex: 1;
@@ -798,16 +627,6 @@
 				justify-content: space-between;
 				font-size: 28rpx;
 				color: #c3c3c3;
-			}
-
-			.discount {
-				font-size: 24rpx;
-				color: #FF8B62;
-				border: 1rpx solid #FF8B62;
-				border-radius: 10rpx;
-				margin-top: 10rpx;
-				margin-left: 20rpx;
-				padding: 5rpx 10rpx;
 			}
 		}
 

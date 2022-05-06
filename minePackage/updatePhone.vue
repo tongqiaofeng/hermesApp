@@ -33,9 +33,6 @@
 				countDown: null
 			};
 		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
-		},
 		methods: {
 			// 修改手机号
 			updatePhoneNumber() {

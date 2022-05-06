@@ -9,12 +9,22 @@
 		<view class="inventory-top">
 			<view :style="{ height: height + 'px' }"></view>
 			<!--  #ifdef  MP-WEIXIN -->
-			<view class="mine-title">
-				<image @click="goBack" style="width: 17rpx; height: 30rpx" src="../static/imgs/common/back.png"
-					mode="aspectFill"></image>
-				<input class="search-input" type="text" v-model="keyWord" placeholder="搜索"
-					placeholder-style="color: #7b7b7b;font-size: 24rpx;" @input="inputChange" />
-			</view>
+			  <view class="mine-title">
+				<image
+				  @click="goBack"
+				  style="width: 17rpx; height: 30rpx"
+				  src="../static/imgs/common/back.png"
+				  mode="aspectFill"
+				></image>
+				<input
+				  class="search-input"
+				  type="text"
+				  v-model="keyWord"
+				  placeholder="搜索"
+				  placeholder-style="color: #7b7b7b;font-size: 24rpx;"
+				  @input="inputChange"
+				/>
+			  </view>
 			<!--  #endif -->
 			<!--  #ifndef  MP-WEIXIN -->
 			<uni-search-bar v-model="keyWord" placeholder="搜索" @input="inputChange" cancelButton="none" />
@@ -79,7 +89,7 @@
 									<view style="margin: 10rpx 0 20rpx 0; font-size: 26rpx">货号: {{ item.productCode }}
 									</view>
 									<view class="cs" v-if="item.sold == 0">成本价:
-										{{ getPrice(item.cost, "HKD") }}
+										{{ getPrice(item.hkdCost, "HKD") }}
 									</view>
 									<view v-if="item.sold == 1">
 										<view class="cs">入库时间: {{ item.createTime }} 【{{
@@ -99,24 +109,24 @@
 							<view v-if="item.sold == 1">
 								<view class="line"></view>
 								<view class="price">
-									<view style="width: 50%">成本价: {{ getPrice(item.cost, "HKD") }}</view>
+									<view style="width: 50%">成本价: {{ getPrice(item.hkdCost, "HKD") }}</view>
 									<view style="width: 50%; text-align: right">同行价:
-										{{ getPrice(item.pricePeer, "HKD") }}
+										{{ getPrice(item.hkdPricePeer, "HKD") }}
 									</view>
 									<view style="width: 50%" class="price-every">散客价:
-										{{ getPrice(item.priceIndi, "HKD") }}
+										{{ getPrice(item.hkdPriceIndi, "HKD") }}
 									</view>
 								</view>
 							</view>
 							<view v-if="item.sold == 2 || item.sold == 3 || item.sold == 4">
 								<view class="line"></view>
 								<view class="price">
-									<view style="width: 50%">成本价: {{ getPrice(item.cost, "HKD") }}</view>
+									<view style="width: 50%">成本价: {{ getPrice(item.hkdCost, "HKD") }}</view>
 									<view style="width: 50%; text-align: right">销售价:
-										{{ getPrice(item.saleTotalHkPrice, "HKD") }}
+										{{ getPrice(item.hkdPriceTran, "HKD") }}
 									</view>
 									<view style="width: 50%" class="price-every">利润:
-										{{ getPrice(item.saleTotalHkPrice - item.cost, "HKD") }}
+										{{ getPrice(item.hkdPriceTran - item.hkdCost, "HKD") }}
 									</view>
 								</view>
 							</view>
@@ -169,23 +179,7 @@
 					},
 					{
 						id: 3,
-						name: "已出售(未出库)",
-					},
-					{
-						id: 4,
-						name: "已出售(已出库)",
-					},
-					{
-						id: 5,
-						name: "客人取回",
-					},
-					{
-						id: 6,
-						name: "购入退货",
-					},
-					{
-						id: 7,
-						name: "遗失",
+						name: "已出售",
 					},
 				],
 
@@ -201,12 +195,12 @@
 		onLoad() {
 			// 获取手机状态栏高度
 			uni.getSystemInfo({
-				success: (data) => {
-					// 将其赋值给this
-					this.height = data.statusBarHeight;
-				},
+			  success: (data) => {
+			    // 将其赋值给this
+			    this.height = data.statusBarHeight;
+			  },
 			});
-
+			
 			this.stateIdx = 2;
 
 			if (this.list.length == 0 && uni.getStorageSync("token").length > 0) {
@@ -246,7 +240,7 @@
 					keyword: this.keyWord.trim(),
 					userId: 0,
 					page: this.page,
-					pageNum: 10,
+					pageNum: 10
 				};
 
 				if (uni.getStorageSync("role") == "peer") {
@@ -396,14 +390,14 @@
 			// 查看包包详情
 			checkDetails(item) {
 				uni.navigateTo({
-					url: "../minePackage/details?id=" + item.id,
+					url: "../commonPackage/details?id=" + item.id,
 				});
 			},
 			// 返回上一层
 			goBack() {
-				uni.navigateBack({
-					delta: 1,
-				});
+			  uni.navigateBack({
+			    delta: 1,
+			  });
 			},
 		},
 	};
@@ -429,22 +423,22 @@
 			}
 
 			.mine-title {
-				height: 44px;
-				padding: 0 40rpx;
-				display: flex;
-				align-items: center;
-
-				.search-input {
-					width: 400rpx;
-					padding: 10rpx 20rpx;
-					margin-left: 20rpx;
-					background-color: #f6f6f6;
-					border-radius: 30px;
-					text-align: center;
-					font-size: 24rpx;
-				}
+			  height: 44px;
+			  padding: 0 40rpx;
+			  display: flex;
+			  align-items: center;
+			
+			  .search-input {
+			    width: 400rpx;
+			    padding: 10rpx 20rpx;
+			    margin-left: 20rpx;
+			    background-color: #f6f6f6;
+			    border-radius: 30px;
+			    text-align: center;
+			    font-size: 24rpx;
+			  }
 			}
-
+			
 			.inputs {
 				margin-top: 40rpx;
 

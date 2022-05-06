@@ -1,51 +1,27 @@
 {
-	"easycom": {
-		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
-	},
 	"pages": [{
 		"path": "pages/index/index",
 		"style": {
-			"navigationBarTitleText": "PAULIANA 宝莉安娜高级珠宝",
+			"navigationBarTitleText": "包治百病 BZBB.COM",
 			"navigationBarTextStyle": "white",
 			"navigationBarBackgroundColor": "#85dbd0",
 			"enablePullDownRefresh": true,
 			"navigationStyle": "custom",
 			"app-plus": {
-				"titleView": false,
-				"bounce": "none" //关闭窗口回弹效果
+				"titleView": false
 			}
 		}
 	}, {
 		"path": "pages/classify/classify",
 		"style": {
-			"navigationBarTitleText": "爱马仕",
+			"navigationBarTitleText": "包包分类",
 			"enablePullDownRefresh": true
 		}
 	}, {
 		"path": "pages/classify/classifyJewelry",
 		"style": {
-			"navigationBarTitleText": "珠宝",
+			"navigationBarTitleText": "珠宝分类",
 			"enablePullDownRefresh": true
-		}
-	}, {
-		"path": "pages/message/message",
-		"style": {
-			"navigationBarTitleText": "消息"
-			// "navigationBarTextStyle": "black",
-			// "navigationBarBackgroundColor": "#f9f9f9",
-			// "app-plus": {
-			// 	"titleView": false
-			// }
-		}
-	}, {
-		"path": "pages/message/chat",
-		"style": {
-			"navigationBarTitleText": "聊天"
-			// "navigationBarTextStyle": "black",
-			//"navigationBarBackgroundColor": "#ffffff"
-			// "app-plus": {
-			// 	"titleView": false
-			// }
 		}
 	}, {
 		"path": "pages/mine/mine",
@@ -63,6 +39,17 @@
 			"navigationBarTextStyle": "black",
 			"navigationBarBackgroundColor": "#fbfbfb",
 			"navigationStyle": "custom",
+			"app-plus": {
+				"titleView": false
+			}
+		}
+	}, {
+		"path": "pages/cart/shoppingCart",
+		"style": {
+			"navigationBarTitleText": "购物车",
+			"navigationBarTextStyle": "black",
+			"navigationBarBackgroundColor": "#f9f9f9",
+			"enablePullDownRefresh": true,
 			"app-plus": {
 				"titleView": false
 			}
@@ -95,18 +82,6 @@
 					}
 				}
 			}, {
-				"path": "saleReport",
-				"style": {
-					"navigationBarTitleText": "珠宝销售报表",
-					"navigationBarTextStyle": "black",
-					"navigationBarBackgroundColor": "#f9f9f9",
-					"enablePullDownRefresh": true,
-					"navigationStyle": "custom",
-					"app-plus": {
-						"titleView": false
-					}
-				}
-			}, {
 				"path": "jewelryDetails",
 				"style": {
 					"navigationBarTitleText": "成品详情",
@@ -127,132 +102,221 @@
 					"enablePullDownRefresh": true
 				}
 			}]
+		}, {
+			"root": "package",
+			"pages": [{
+				"path": "confirmAnOrder",
+				"style": {
+					"navigationBarTitleText": "确认订单",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "payOrder",
+				"style": {
+					"navigationBarTitleText": "支付方式",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "addressAdmin",
+				"style": {
+					"navigationBarTitleText": "收货地址",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "addressAdd",
+				"style": {
+					"navigationBarTitleText": "添加收货地址",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "addressUpdate",
+				"style": {
+					"navigationBarTitleText": "编辑收货地址",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "orderList",
+				"style": {
+					"navigationBarTitleText": "订单列表",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "orderDetail",
+				"style": {
+					"navigationBarTitleText": "订单详情",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "returnOrder",
+				"style": {
+					"navigationBarTitleText": "退款/售后",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}]
 		},
 		{
 			"root": "minePackage",
 			"pages": [{
-					"path": "inventory",
-					"style": {
-						"navigationBarTitleText": "爱马仕库存查询",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#f9f9f9",
-						"enablePullDownRefresh": true,
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
-					}
-				}, {
-					"path": "billSummary",
-					"style": {
-						"navigationBarTitleText": "账单报表",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#f9f9f9",
-						"enablePullDownRefresh": true,
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
-					}
-				}, {
-					"path": "billDetail",
-					"style": {
-						"navigationBarTitleText": "详情",
-						// "navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						},
-						"enablePullDownRefresh": true
-					}
-				}, {
-					"path": "collectGoods",
-					"style": {
-						"navigationBarTitleText": "商品收藏",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#f9f9f9",
-						"enablePullDownRefresh": true,
-						"app-plus": {
-							"titleView": false
-						}
-					}
-				}, {
-					"path": "footprint",
-					"style": {
-						"navigationBarTitleText": "浏览记录",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#f9f9f9",
-						"enablePullDownRefresh": true,
-						"app-plus": {
-							"titleView": false
-						}
-					}
-				},
-				// {
-				// 	"path": "register",
-				// 	"style": {
-				// 		"navigationBarTitleText": "注册",
-				// 		"navigationBarTextStyle": "black",
-				// 		"navigationBarBackgroundColor": "#fff",
-				// 		"navigationStyle": "custom",
-				// 		"app-plus": {
-				// 			"titleView": false
-				// 		}
-				// 	}
-				// }, 
-				{
-					"path": "password",
-					"style": {
-						"navigationBarTitleText": "重置密码",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#fbfbfb",
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
-					}
-				}, {
-					"path": "updateMyMsg",
-					"style": {
-						"navigationBarTitleText": "个人信息",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#f9f9f9",
-						"app-plus": {
-							"titleView": false
-						}
-					}
-				}, {
-					"path": "updatePhone",
-					"style": {
-						"navigationBarTitleText": "修改手机号",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#f9f9f9",
-						"app-plus": {
-							"titleView": false
-						}
-					}
-				}, {
-					"path": "details",
-					"style": {
-						"navigationBarTitleText": "详情",
-						// "navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						},
-						"enablePullDownRefresh": true
-					}
-				}, {
-					"path": "integral",
-					"style": {
-						"navigationBarTitleText": "积分详情",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#f9f9f9",
-						"enablePullDownRefresh": true,
-						"app-plus": {
-							"titleView": false
-						}
+				"path": "inventory",
+				"style": {
+					"navigationBarTitleText": "包包库存查询",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
 					}
 				}
-			]
+			}, {
+				"path": "collectGoods",
+				"style": {
+					"navigationBarTitleText": "商品收藏",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "footprint",
+				"style": {
+					"navigationBarTitleText": "浏览记录",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"enablePullDownRefresh": true,
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "register",
+				"style": {
+					"navigationBarTitleText": "注册",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#fff",
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "password",
+				"style": {
+					"navigationBarTitleText": "重置密码",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#fbfbfb",
+					"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "updateMyMsg",
+				"style": {
+					"navigationBarTitleText": "个人信息",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "updatePhone",
+				"style": {
+					"navigationBarTitleText": "修改手机号",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}]
+		},
+		{
+			"root": "soldPackage",
+			"pages": [{
+				"path": "returnType",
+				"style": {
+					"navigationBarTitleText": "选择售后类型",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "priceAndProduct",
+				"style": {
+					"navigationBarTitleText": "",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "openWechat",
+				"style": {
+					"navigationBarTitleText": "打开微信小程序",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}, {
+				"path": "logistics",
+				"style": {
+					"navigationBarTitleText": "物流详情",
+					"navigationBarTextStyle": "black",
+					"navigationBarBackgroundColor": "#f9f9f9",
+					"app-plus": {
+						"titleView": false
+					}
+				}
+			}]
 		},
 		{
 			"root": "commonPackage",
@@ -278,76 +342,15 @@
 					"enablePullDownRefresh": true
 				}
 			}, {
-				"path": "openWechat",
+				"path": "details",
 				"style": {
-					"navigationBarTitleText": "打开微信小程序",
-					"navigationBarTextStyle": "black",
-					"navigationBarBackgroundColor": "#f9f9f9",
+					"navigationBarTitleText": "详情",
+					// "navigationStyle": "custom",
 					"app-plus": {
 						"titleView": false
-					}
-				}
-			}, {
-				"path": "QRCode",
-				"style": {
-					"navigationBarTitleText": "产品二维码",
-					"enablePullDownRefresh": false
-				}
-
-			}]
-		},
-		{
-			"root": "hermesReport",
-			"pages": [{
-				"path": "hermesReport",
-				"style": {
-					"navigationBarTitleText": "报表",
-					"enablePullDownRefresh": false
-				}
-
-			}, {
-				"path": "hermesSellBar",
-				"style": {
-					"navigationBarTitleText": "营业额、利润、数量",
+					},
 					"enablePullDownRefresh": true
 				}
-
-			}, {
-				"path": "profitReport",
-				"style": {
-					"navigationBarTitleText": "利润排行",
-					"navigationBarTextStyle": "white",
-					"navigationBarBackgroundColor": "#85dbd0",
-					"enablePullDownRefresh": true
-					
-				}
-
-			}, {
-				"path": "sellVolumeReport",
-				"style": {
-					"navigationBarTitleText": "销量排行",
-					"navigationBarTextStyle": "white",
-					"navigationBarBackgroundColor": "#85dbd0",
-					"enablePullDownRefresh": true
-					
-				}
-
-			}, {
-				"path": "stockReport",
-				"style": {
-					"navigationBarTitleText": "库存报表",
-					"enablePullDownRefresh": true
-					
-				}
-
-			}, {
-				"path": "stockList",
-				"style": {
-					"navigationBarTitleText": "积压货物",
-					"enablePullDownRefresh": true
-					
-				}
-
 			}]
 		}
 	],
@@ -370,21 +373,23 @@
 			},
 			{
 				"pagePath": "pages/classify/classify",
-				"text": "爱马仕",
-				"iconPath": "static/imgs/tabBar/classifyBag.png",
-				"selectedIconPath": "static/imgs/tabBar/classifyBag01.png"
-			},
-			{
-				"pagePath": "pages/classify/classifyJewelry",
-				"text": "珠宝",
+				"text": "包包分类",
 				"iconPath": "static/imgs/tabBar/classify.png",
 				"selectedIconPath": "static/imgs/tabBar/classify01.png"
 			},
+			// #ifdef MP-WEIXIN
+			// {
+			// 	"pagePath": "pages/cart/shoppingCart",
+			// 	"text": "购物袋",
+			// 	"iconPath": "static/imgs/tabBar/classify.png",
+			// 	"selectedIconPath": "static/imgs/tabBar/classify01.png"
+			// },
+			// #endif 
 			{
-				"pagePath": "pages/message/message",
-				"text": "消息",
-				"iconPath": "static/imgs/tabBar/message.png",
-				"selectedIconPath": "static/imgs/tabBar/message01.png"
+				"pagePath": "pages/classify/classifyJewelry",
+				"text": "珠宝分类",
+				"iconPath": "static/imgs/tabBar/classify.png",
+				"selectedIconPath": "static/imgs/tabBar/classify01.png"
 			},
 			{
 				"pagePath": "pages/mine/mine",

@@ -1,6 +1,6 @@
 <template>
 	<view class="search-container">
-		<view class="search-top" id="search-top">
+		<view class="search-top">
 			<view class="upAndDown">
 				<view class="mine-top">
 					<view :style="{ height: height + 'px' }"></view>
@@ -8,10 +8,10 @@
 						<image @click="goBack" style="width: 17rpx; height: 30rpx"
 							src="../../static/imgs/common/back.png" mode="aspectFill"></image>
 						<view class="search-input">
-							<picker mode="selector" :range="selList" :value="getPickerSelValue()"  @change="selTypeChange">
-								<view style="display: flex; align-items: center">
-									<view style="width: 80rpx">{{ type }}</view>
-									<image style="width: 32rpx; height: 32rpx; margin-left: 10rpx"
+							<picker mode="selector" :range="selList" @change="selTypeChange">
+								<view style="display: flex;align-items: center;">
+									<view style="width: 60rpx;">{{type}}</view>
+									<image style="width: 32rpx;height: 32rpx;margin-left: 10rpx;"
 										src="../../static/imgs/search/yes.png" mode="aspectFill"></image>
 									<view class="line"></view>
 								</view>
@@ -57,7 +57,7 @@
 			</view>
 			<view v-if="select == 2" class="filter-container" :style="{ top: topHeight + 'px' }">
 				<view class="goClassify" @click="goToClassify">返回分类列表</view>
-				<view class="size-main" v-if="sizeList.length > 0 && type == '爱马仕'">
+				<view class="size-main" v-if="sizeList.length > 0 && type == '包包'">
 					<view class="size-every" type="default" v-for="(item, index) in sizeList" :key="index"
 						@click="sizeSelect(item.size)" :style="{
               'background-color': size == item.size ? '#85dbd0' : '#fff',
@@ -68,59 +68,55 @@
 				<view class="size-main" v-if="jewelleryModelList.length > 0 && type == '珠宝'">
 					<view class="size-every" type="default" v-for="(item, index) in jewelleryModelList" :key="index"
 						@click="tagSelect(item.name)" :style="{
-              'background-color': tag == item.name ? '#85dbd0' : '#fff',
-              color: tag == item.name ? '#fff' : '#000',
-            }">{{ item.name }}
+				      'background-color': tag == item.name ? '#85dbd0' : '#fff',
+				      color: tag == item.name ? '#fff' : '#000',
+				    }">{{ item.name }}
 					</view>
 				</view>
 				<view class="shade" style="min-height: 56vh" @click="filterSel03"></view>
 			</view>
 		</view>
-		<view class="search-main" :style="{'margin-top': topConHeight+'px'}">
+		<view class="search-main">
 			<view v-if="haveData == 0" class="no-data" style="padding-top: 300rpx">
 				<image src="../../static/imgs/common/no.png" mode="aspectFill"></image>
 				<text style="font-size: 30rpx">暂无商品哦~</text>
 			</view>
 			<view v-else>
-				<view class="main-container" v-if="type == '爱马仕'">
+				<view class="main-container" v-if="type == '包包'">
 					<view class="main-every" v-for="(item, index) in bagSearchList" :key="index">
-						<view class="every-image" @click="checkDetails(item)">
-							<easy-loadimage v-if="item.pic" :image-src="item.pic" :scroll-top="scrollTop" width="344rpx" height="344rpx" border-radius="10rpx" mode="aspectFill"></easy-loadimage>
-							<!-- <image v-if="item.pic" :src="item.pic" mode="aspectFill" @click="checkDetails(item)"> -->
+						<view class="every-image">
+							<image v-if="item.pic" :src="item.pic" mode="aspectFill" @click="checkDetails(item)">
 							</image>
 						</view>
 						<view class="every-main">
 							<view class="main-model">{{ item.name }}</view>
 							<view class="main-price">
-								<text class="price-money">HKD
+								<text class="price-money">{{ item.currency }}
 									<text style="font-size: 30rpx">{{
-                    " " + formatNumberRgx(item.priceIndi)
-                  }}</text>
+					          " " + formatNumberRgx(item.hkdPriceIndi)
+					        }}</text>
 								</text>
 							</view>
 						</view>
 					</view>
 				</view>
 				<view class="main-container" v-if="type == '珠宝'">
-					<view class="main-every" style="position: relative;" v-for="(item, index) in bagSearchList"
-						:key="index">
-						<view class="every-image" @click="checkDetails(item)">
-							<easy-loadimage v-if="item.img" :image-src="imgUrl + item.img" :scroll-top="scrollTop" width="344rpx" height="344rpx" border-radius="10rpx" mode="aspectFill"></easy-loadimage>
-							<!-- <image v-if="item.img" :src="imgUrl + item.img" mode="aspectFill" @click="checkDetails(item)"> </image> -->
+					<view class="main-every" v-for="(item, index) in bagSearchList" :key="index">
+						<view class="every-image">
+							<image v-if="item.img" :src="imgUrl + item.img" mode="aspectFill"
+								@click="checkDetails(item)">
+							</image>
 						</view>
 						<view class="every-main">
 							<view class="main-model">{{ item.productName }}</view>
-							<view class="main-price" v-if="item.sellPrice != 0">
+							<view class="main-price">
 								<text class="price-money">{{ item.currency }}
 									<text style="font-size: 30rpx">{{
-							      " " + formatNumberRgx(item.sellPrice)
-							    }}</text>
+					          " " + formatNumberRgx(item.adviseSellPrice)
+					        }}</text>
 								</text>
 							</view>
-							<view class="main-price" v-else><text class="price-money">价格请咨询客服</text></view>
 						</view>
-						<image v-if="item.activityInfo" src="../../static/imgs/details/discount.png" mode="aspectFill"
-							style="position: absolute; top:20rpx; right: 20rpx; width: 80rpx; height: 80rpx;"></image>
 					</view>
 				</view>
 			</view>
@@ -132,12 +128,11 @@
 	export default {
 		data() {
 			return {
-				scrollTop:0,
 				imgUrl: this.$baseJewelleryUrl,
 				haveData: 1,
 				height: null,
 				topHeight: null,
-				select: 0,
+				select: 3,
 				isUp: 0,
 				img1: require("../../static/imgs/search/up.png"),
 				img2: require("../../static/imgs/search/down.png"),
@@ -154,22 +149,12 @@
 
 				sizeList: [],
 				jewelleryModelList: [],
-				type: "珠宝",
-				selList: ["珠宝", "爱马仕"],
-				tag: "",
-
-				topConHeight: 0,
-				initType: '',
+				type: '包包',
+				selList: ['包包', '珠宝'],
+				tag: ""
 			};
 		},
-		mounted() {
-			const query = uni.createSelectorQuery().in(this);
-			query.select('#search-top').boundingClientRect(data => {
-				console.log('顶部高度');
-				console.log(data);
-				this.topConHeight = data.height;
-			}).exec();
-		},
+		onShow() {},
 		onLoad(option) {
 			// 获取手机状态栏高度
 			uni.getSystemInfo({
@@ -178,22 +163,11 @@
 					this.height = data.statusBarHeight;
 				},
 			});
-			
-			let initType = uni.getStorageSync('initType');
-			if(initType){
-				this.initType = initType;
-				if(this.initType == 'J'){
-					this.selList = ['珠宝'];
-					this.type = '珠宝';
-				}
-				else if(this.initType == 'H'){
-					this.selList = ['爱马仕'];
-					this.type = '爱马仕';
-				}
-			}
-			
-			if (this.selList.indexOf(option.type) > -1) {
-				this.type = option.type;
+
+			console.log("详情");
+			console.log(option);
+			if (option.type) {
+				this.type = option.type == 0 ? '包包' : '珠宝';
 				this.model =
 					option.model === undefined ?
 					"" :
@@ -223,18 +197,7 @@
 				this.getBagList();
 			}
 		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
-		},
-		onPageScroll(e){
-			this.scrollTop = e.scrollTop;
-		},
 		methods: {
-			getPickerSelValue(){
-				let idx = this.selList.indexOf(this.type);
-				if(idx < 0) idx = 0;
-				return idx;
-			},
 			selTypeChange(e) {
 				this.type = this.selList[Number(e.detail.value)];
 				this.page = 1;
@@ -245,14 +208,14 @@
 				this.haveMore = 0;
 				this.getBagList();
 			},
-			// 获取该样式爱马仕列表
+			// 获取该样式包包列表
 			getBagList() {
 				console.log("要传参啦");
 				console.log(this.model);
 				uni.showLoading({
 					title: "加载中......",
 				});
-				if (this.type == "爱马仕") {
+				if (this.type == '包包') {
 					uni.request({
 						method: "POST",
 						url: this.$baseUrl + "/modelSearch",
@@ -269,7 +232,7 @@
 						},
 						complete: (res) => {
 							uni.hideLoading();
-							console.log("搜索爱马仕列表");
+							console.log("搜索包包列表");
 							console.log(res);
 
 							if (res.data.length == 0) {
@@ -288,19 +251,12 @@
 							} else {
 								this.haveData = 1;
 							}
-							
-							setTimeout(() => {
-								this.scrollTop ++;
-							}, 500) 
 						},
 					});
-				} else if (this.type == "珠宝") {
+				} else if (this.type == '珠宝') {
 					uni.request({
 						method: "POST",
-						url: this.$baseJewelleryUrl +
-							"/jewellerySearch?page=" +
-							this.page +
-							"&pageNum=10",
+						url: this.$baseJewelleryUrl + "/jewellerySearch?page=" + this.page + "&pageNum=10",
 						data: {
 							keyword: this.keyword,
 							tag: this.tag,
@@ -311,7 +267,7 @@
 						},
 						complete: (res) => {
 							uni.hideLoading();
-							console.log("搜索珠宝列表");
+							console.log("搜索包包列表");
 							console.log(res);
 
 							if (res.data.length == 0) {
@@ -330,10 +286,6 @@
 							} else {
 								this.haveData = 1;
 							}
-							
-							setTimeout(() => {
-								this.scrollTop ++;
-							}, 500) 
 						},
 					});
 				}
@@ -352,16 +304,13 @@
 
 				this.getBagList();
 
-				if (this.type == "爱马仕") {
-					for (let item of this.modelSizeList) {
-						console.log(item.name);
-						for (let every of item.list) {
-							console.log(every.model.indexOf(this.keyword));
-							if (every.model.indexOf(this.keyword) !== -1) {
-								this.model = every.model;
-								this.sizeList = every.sizeList;
-								return;
-							}
+				for (let item of this.modelSizeList) {
+					console.log(item.name);
+					for (let every of item.list) {
+						console.log(every.model.indexOf(this.keyword));
+						if (every.model.indexOf(this.keyword) !== -1) {
+							this.sizeList = every.sizeList;
+							return;
 						}
 					}
 				}
@@ -396,8 +345,7 @@
 			},
 			// 筛选
 			filterSel03() {
-				console.log(this.sizeList.length);
-				if (this.type == "爱马仕" && this.sizeList.length == 0) {
+				if (this.type == '包包' && this.sizeList.length == 0) {
 					this.goToClassify();
 				} else {
 					if (this.select == 2) {
@@ -443,17 +391,17 @@
 
 				this.getBagList();
 			},
-			// 查看爱马仕详情
+			// 查看包包详情
 			checkDetails(item) {
 				console.log(item);
-				if (this.type == "爱马仕") {
+				if (this.type == '包包') {
 					uni.navigateTo({
-						url: "../../minePackage/details?id=" + item.id,
+						url: "../details?id=" + item.id,
 					});
-				} else if (this.type == "珠宝") {
+				} else if (this.type == '珠宝') {
 					uni.navigateTo({
 						url: "../../jewelryPackage/jewelryDetails?id=" + item.id,
-					});
+					})
 				}
 			},
 			// 获取包款尺寸列表
@@ -485,17 +433,17 @@
 			// 获取珠宝成品分类列表
 			getJewelryClassify() {
 				uni.request({
-					url: this.$baseJewelleryUrl + "/jewelleryModelSort",
+					url: this.$baseJewelleryUrl + '/jewelleryModelSort',
 					header: {
 						"content-type": "application/json",
 						token: uni.getStorageSync("token"),
 					},
 					complete: (res) => {
-						console.log("珠宝分类");
+						console.log('珠宝分类');
 						console.log(res);
 						this.jewelleryModelList = res.data;
-					},
-				});
+					}
+				})
 			},
 			// 返回上一层
 			goBack() {
@@ -505,14 +453,14 @@
 			},
 			// 返回分类列表
 			goToClassify() {
-				if (this.type == "爱马仕") {
+				if (this.type == '包包') {
 					uni.switchTab({
-						url: "../../pages/classify/classify",
+						url: "../classify/classify",
 					});
-				} else if (this.type == "珠宝") {
+				} else if (this.type == '珠宝') {
 					uni.switchTab({
-						url: "../../pages/classify/classifyJewelry",
-					});
+						url: "../classify/classifyJewelry"
+					})
 				}
 			},
 		},
@@ -592,7 +540,7 @@
 						width: 26rpx;
 						height: 6rpx;
 						margin: 0 auto;
-						margin-top: 10rpx;
+						margin-top: 20rpx;
 						background-color: #85dbd0;
 						border-radius: 60px;
 						text-align: center;
@@ -651,14 +599,14 @@
 		}
 
 		.search-main {
-			margin-top: 230rpx;
+			margin-top: 200rpx;
 			padding: 0 20rpx;
+			// padding-top: 60rpx;
 
 			.main-container {
-				display: grid;
+				display: flex;
 				justify-content: space-between;
-				grid-template-columns: repeat(auto-fill, 344rpx);
-				grid-gap: 20rpx;
+				flex-wrap: wrap;
 				background-color: #fff;
 				border-top-left-radius: 30px;
 				border-top-right-radius: 30px;
@@ -703,15 +651,9 @@
 						10rpx 0px 20rpx 0 #f9f9f9, 0px 20rpx 30rpx 0 #f9f9f9;
 
 					.main-model {
-						height: 64rpx;
 						color: #000;
 						font-size: 24rpx;
 						font-weight: bold;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						display: -webkit-box;
-						-webkit-box-orient: vertical;
-						-webkit-line-clamp: 2;
 					}
 
 					.main-price {

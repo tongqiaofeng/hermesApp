@@ -12,12 +12,22 @@
 		<view class="inventory-top">
 			<view :style="{ height: height + 'px' }"></view>
 			<!--  #ifdef  MP-WEIXIN -->
-			<view class="mine-title">
-				<image @click="goBack" style="width: 17rpx; height: 30rpx" src="../static/imgs/common/back.png"
-					mode="aspectFill"></image>
-				<input class="search-input" type="text" v-model="keyWord" placeholder="搜索"
-					placeholder-style="color: #7b7b7b;font-size: 24rpx;" @input="inputChange" />
-			</view>
+			  <view class="mine-title">
+				<image
+				  @click="goBack"
+				  style="width: 17rpx; height: 30rpx"
+				  src="../static/imgs/common/back.png"
+				  mode="aspectFill"
+				></image>
+				<input
+				  class="search-input"
+				  type="text"
+				  v-model="keyWord"
+				  placeholder="搜索"
+				  placeholder-style="color: #7b7b7b;font-size: 24rpx;"
+				  @input="inputChange"
+				/>
+			  </view>
 			<!--  #endif -->
 			<!--  #ifndef  MP-WEIXIN -->
 			<uni-search-bar v-model="keyWord" placeholder="搜索" @input="inputChange" cancelButton="none" />
@@ -54,7 +64,8 @@
 		</view>
 		<view v-else class="inventory-main">
 			<view class="inventory-num">
-				<view>共查询到{{ total }}件商品 </view>
+				<view>共查询到{{ total }}件商品</text>
+				</view>
 			</view>
 			<view class="plantList">
 				<view v-for="(item, index) in list" :key="index" class="plant">
@@ -69,11 +80,7 @@
 								<view style="flex: 1">
 									<view class="every-name">
 										<view class="bh">{{ item.productName }}</view>
-										<view v-if="stateIdx == 0 || stateIdx == 3" :style="{
-                        color: getSaleStateClr(item),
-                        'font-size': '28rpx',
-                        'margin-left': '15rpx',
-                      }">
+										<view v-if="stateIdx == 0 || stateIdx == 3" :style="{color: getSaleStateClr(item), 'font-size': '28rpx', 'margin-left': '15rpx'}">
 											{{ getSaleState(item) }}
 										</view>
 									</view>
@@ -82,17 +89,12 @@
 											{{ getPrice(item.saleMoney, item.saleCurrency) }}
 										</view>
 										<view v-if="item.saleCurrency == 'CNY'" class="cs">利润:
-											{{
-                        getPrice(
-                          costPrice(item.saleMoney, item.totalCnPrice),
-                          "CNY"
-                        )
-                      }}
+											{{ getPrice(item.saleMoney - item.totalCnPrice, 'CNY') }}
 										</view>
 									</view>
 									<view v-else>
 										<view class="cs">价格:
-											{{ getPrice(item.tagPrice, "CNY") }}
+											{{ getPrice(item.adviseSellPrice, 'CNY') }}
 										</view>
 										<view class="cs">库存地:
 											{{ item.storageName }}
@@ -134,7 +136,7 @@
 					},
 					{
 						id: 0,
-						name: "存货",
+						name: "库存中",
 					},
 					{
 						id: 1,
@@ -163,12 +165,12 @@
 		onLoad() {
 			// 获取手机状态栏高度
 			uni.getSystemInfo({
-				success: (data) => {
-					// 将其赋值给this
-					this.height = data.statusBarHeight;
-				},
+			  success: (data) => {
+			    // 将其赋值给this
+			    this.height = data.statusBarHeight;
+			  },
 			});
-
+			
 			this.stockIdx = 0;
 			this.stateIdx = 3;
 
@@ -207,7 +209,7 @@
 				this.reserveNum = 0;
 				let data = {};
 				data = {
-					keyword: this.keyWord.trim(),
+					keyword: this.keyWord.trim()
 				};
 
 				if (this.stockIdx > 0) data.storageId = this.stocks[this.stockIdx].id;
@@ -215,10 +217,7 @@
 				if (this.tagIdx > 0) data.tag = this.tagList[this.tagIdx];
 
 				uni.request({
-					url: this.$baseJewelleryUrl +
-						"/productStockSearch?page=" +
-						this.page +
-						"&pageNum=10",
+					url: this.$baseJewelleryUrl + "/productStockSearch?page=" + this.page + '&pageNum=10',
 					method: "POST",
 					header: {
 						"content-type": "application/json",
@@ -227,7 +226,7 @@
 					data: data,
 					complete: (res) => {
 						uni.hideLoading();
-						console.log("珠宝成品列表");
+						console.log('珠宝成品列表');
 						console.log(res);
 						if (this.checkBack(res) == false) return;
 
@@ -261,12 +260,12 @@
 						token: uni.getStorageSync("token"),
 					},
 					complete: (ret) => {
-						console.log("库存地列表");
+						console.log('库存地列表');
 						console.log(ret);
 						uni.hideLoading();
 						if (this.checkBack(ret, true) == false) return;
 						if (ret.data.length > 0) this.stocks = ret.data;
-						console.log(this.stocks);
+						console.log(this.stocks)
 					},
 				});
 			},
@@ -279,7 +278,7 @@
 						token: uni.getStorageSync("token"),
 					},
 					complete: (ret) => {
-						console.log("标签列表");
+						console.log('标签列表');
 						console.log(ret);
 						uni.hideLoading();
 						if (this.checkBack(ret, true) == false) return;
@@ -356,9 +355,9 @@
 			},
 			// 返回上一层
 			goBack() {
-				uni.navigateBack({
-					delta: 1,
-				});
+			  uni.navigateBack({
+			    delta: 1,
+			  });
 			},
 		},
 	};
@@ -382,22 +381,22 @@
 			.item {
 				padding: 0 30rpx;
 			}
-
+			
 			.mine-title {
-				height: 44px;
-				padding: 0 40rpx;
-				display: flex;
-				align-items: center;
-
-				.search-input {
-					width: 400rpx;
-					padding: 10rpx 20rpx;
-					margin-left: 20rpx;
-					background-color: #f6f6f6;
-					border-radius: 30px;
-					text-align: center;
-					font-size: 24rpx;
-				}
+			  height: 44px;
+			  padding: 0 40rpx;
+			  display: flex;
+			  align-items: center;
+			
+			  .search-input {
+			    width: 400rpx;
+			    padding: 10rpx 20rpx;
+			    margin-left: 20rpx;
+			    background-color: #f6f6f6;
+			    border-radius: 30px;
+			    text-align: center;
+			    font-size: 24rpx;
+			  }
 			}
 
 			.inputs {

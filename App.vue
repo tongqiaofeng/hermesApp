@@ -1,32 +1,17 @@
 <script>
 	export default {
 		globalData: {
+			testData: '全局变量',
 			userInfo: {
 				userId: 0,
 				userRole: '',
 				userToken: '',
 				userNick: '',
 				userHeadPic: '',
-				phoneNumber: '',
-				userPermissions:'',
-				currency:''
+				phoneNumber: ''
 			},
-			chatInfo: {
-				userId: 0,
-				token: '' 
-			},
-			userList:[],	//聊天用户列表
-			chatUserId:'',	//当前与我聊天的用户的userId
 		},
 		onLaunch() {
-			/* let token = uni.getStorageSync('token');
-			if(token){
-				setTimeout(() => {
-					getApp().globalData.token = token;
-					getApp().globalData.userId = uni.getStorageSync('userId');
-					this.chat_connectServer();
-				}, 1000)
-			} */
 			//#ifdef APP-PLUS  
 			console.log('APP升级更新');
 			console.log(plus.runtime);
@@ -45,7 +30,18 @@
 					console.log('APP升级更新信息获取成功');
 					console.log(res);
 					if (res.data.version != version) {
-						this.updateNew(res.data.url);
+						uni.showModal({ //提醒用户更新  
+							title: "更新提示",
+							content: "新版本已经准备好，是否立即更新？",
+							cancelText: "稍后进行",
+							confirmText: "立即更新",
+							confirmColor: "#85dbd0",
+							success: (ret) => {
+								if (ret.confirm) {
+									plus.runtime.openURL(res.data.url);
+								}
+							}
+						})
 					}
 				}
 			})
@@ -97,10 +93,6 @@
 			//#endif 
 
 			this.getUserMsg();
-			uni.onKeyboardHeightChange(res => {
-			  this.$store.commit('changeKeyboardHeight',res.height)
-			  console.log('键盘高度变化',res)
-			})
 		},
 		onShow() {
 			// uni.setTabBarBadge({
@@ -116,8 +108,8 @@
 			// 获取用户信息
 			getUserMsg() {
 				let token = uni.getStorageSync('token');
-				//console.log('是否需要获取信息')
-				//console.log(token);
+				console.log('是否需要获取信息')
+				console.log(token);
 
 				if (token.length !== 0) {
 					uni.request({
@@ -128,9 +120,10 @@
 							'token': token
 						},
 						complete: (ret) => {
-							//console.log('77777777777777');
 							if (this.checkBack(ret, true) == true) {
 								this.setUserInfo(ret);
+								console.log('resolve');
+								console.log(this.$isResolve())
 								this.$isResolve();
 							} else {
 								this.$isResolve();
@@ -138,38 +131,19 @@
 						},
 					})
 				}
-				else{
-					this.$isResolve();
-				}
-			},
-			updateNew(url){
-				uni.showModal({ //提醒用户更新
-					title: "更新提示",
-					content: "新版本已经准备好，是否立即更新？",
-					//showCancel: false,
-					cancelText: "稍后进行",
-					confirmText: "立即更新",
-					confirmColor: "#85dbd0",
-					success: (ret) => {
-						if (ret.confirm) {
-							//this.updateNew('');
-							//if(url)
-								plus.runtime.openURL(url);
-						}
-					}
-				})
 			}
 		},
 	}
 </script>
 
 <style lang="scss">
+	/*每个页面公共css */
 	image {
 		will-change: transform
 	}
 
 	.no-data {
-		padding-top: 450rpx; 
+		padding-top: 450rpx;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;

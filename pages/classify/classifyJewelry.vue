@@ -1,5 +1,5 @@
 <template>
-	<view class="classify-jewelry-container" v-if="isShow">
+	<view class="classify-jewelry-container">
 		<!-- 珠宝分类 -->
 		<view class="container-main-big" v-if="jewelleryModelList01.length > 0">
 			<view class="big-every"
@@ -7,7 +7,7 @@
 				v-for="(item,index) in jewelleryModelList01" :key="index" @click="goSearch(item.name)">
 				<view class="title">{{item.name}}</view>
 				<view class="title-eng">{{englishSel(item.name)}}</view>
-				<!-- <view class="num">{{item.num}}</view> -->
+				<view class="num">{{item.num}}</view>
 			</view>
 		</view>
 		<view class="container-main-small" v-if="jewelleryModelList02.length > 0">
@@ -16,7 +16,7 @@
 				v-for="(item,index) in jewelleryModelList02" :key="index" @click="goSearch(item.name)">
 				<view class="title">{{item.name}}</view>
 				<view class="title-eng">{{englishSel(item.name)}}</view>
-				<!-- <view class="num">{{item.num}}</view> -->
+				<view class="num">{{item.num}}</view>
 			</view>
 		</view>
 	</view>
@@ -29,23 +29,16 @@
 				imgUrl: this.$baseUrl,
 				jewelleryModelList01: [],
 				jewelleryModelList02: [],
-				isShow: false,
 			}
 		},
 		onLoad() {
 			this.getJewelryClassify();
 		},
-		onShow(){
-			this.chat_updateReddot();
-		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
-		},
 		methods: {
 			// 查询页
 			goSearch(name){
 				uni.navigateTo({
-					url: "../../commonPackage/search/search?tag=" + name + "&type=珠宝",
+					url: "../../commonPackage/search/search?tag=" + name + "&type=1",
 				})
 			},
 			// 英语
@@ -94,9 +87,6 @@
 			},
 			// 获取珠宝成品分类列表
 			getJewelryClassify() {
-				uni.showLoading({
-					title: '加载中...'
-				})
 				uni.request({
 					url: this.$baseJewelleryUrl + '/jewelleryModelSort',
 					header: {
@@ -106,11 +96,9 @@
 					complete: (res) => {
 						console.log('珠宝分类');
 						console.log(res);
-						uni.hideLoading();
 						let list = res.data;
 						this.jewelleryModelList01 = list.slice(0, 4);
 						this.jewelleryModelList02 = list.slice(4, 12);
-						this.isShow = true;
 					}
 				})
 			}
@@ -140,13 +128,12 @@
 				text-align: center;
 
 				.title {
-					margin-top: 30rpx;
 					font-size: 36rpx;
 					color: #fff;
 				}
 
 				.title-eng {
-					margin-top: 5rpx;
+					margin-top: 10rpx;
 					font-size: 28rpx;
 					color: #d6d6d6;
 				}
@@ -181,7 +168,7 @@
 				}
 
 				.title-eng {
-					margin-top: 3rpx;
+					margin-top: 5rpx;
 					font-size: 20rpx;
 					color: #d6d6d6;
 				}

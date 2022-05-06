@@ -1,0 +1,103 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/classify/classify",
+    "pages/classify/classifyJewelry",
+    "pages/mine/mine",
+    "pages/mine/login",
+    "pages/cart/shoppingCart"
+  ],
+  "subPackages": [
+    {
+      "root": "jewelryPackage",
+      "pages": [
+        "jewelryFinished",
+        "jewelryMaterial",
+        "jewelryDetails",
+        "materialDetails"
+      ]
+    },
+    {
+      "root": "package",
+      "pages": [
+        "confirmAnOrder",
+        "payOrder",
+        "addressAdmin",
+        "addressAdd",
+        "addressUpdate",
+        "orderList",
+        "orderDetail",
+        "returnOrder"
+      ]
+    },
+    {
+      "root": "minePackage",
+      "pages": [
+        "inventory",
+        "collectGoods",
+        "footprint",
+        "register",
+        "password",
+        "updateMyMsg",
+        "updatePhone"
+      ]
+    },
+    {
+      "root": "soldPackage",
+      "pages": [
+        "returnType",
+        "priceAndProduct",
+        "openWechat",
+        "logistics"
+      ]
+    },
+    {
+      "root": "commonPackage",
+      "pages": [
+        "service/service",
+        "search/search",
+        "details"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#f9f9f9",
+    "backgroundColor": "#f9f9f9"
+  },
+  "tabBar": {
+    "color": "#c3c3c3",
+    "selectedColor": "#85dbd0",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/imgs/tabBar/index.png",
+        "selectedIconPath": "static/imgs/tabBar/index01.png"
+      },
+      {
+        "pagePath": "pages/classify/classify",
+        "text": "包包分类",
+        "iconPath": "static/imgs/tabBar/classify.png",
+        "selectedIconPath": "static/imgs/tabBar/classify01.png"
+      },
+      {
+        "pagePath": "pages/classify/classifyJewelry",
+        "text": "珠宝分类",
+        "iconPath": "static/imgs/tabBar/classify.png",
+        "selectedIconPath": "static/imgs/tabBar/classify01.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "static/imgs/tabBar/mine.png",
+        "selectedIconPath": "static/imgs/tabBar/mine01.png"
+      }
+    ]
+  },
+  "permission": {},
+  "usingComponents": {}
+}

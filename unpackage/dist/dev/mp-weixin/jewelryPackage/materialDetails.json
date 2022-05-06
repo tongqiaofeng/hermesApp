@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "原材料详情",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-swiper-dot": "/uni_modules/uni-swiper-dot/components/uni-swiper-dot/uni-swiper-dot",
+    "uni-list": "/uni_modules/uni-list/components/uni-list/uni-list",
+    "uni-section": "/uni_modules/uni-section/components/uni-section/uni-section",
+    "uni-list-item": "/uni_modules/uni-list/components/uni-list-item/uni-list-item"
+  }
+}

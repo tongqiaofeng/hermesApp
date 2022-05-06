@@ -2,85 +2,43 @@
 	<view class="mine-container">
 		<view class="mine-top">
 			<view :style="{ height: height + 'px' }"></view>
-			<view style="display: flex; flex-direction: column; justify-content: space-between; flex: 1;">
-				<view class="mine-title">
-					<text>我的</text>
+			<view class="mine-title">
+				<text>我的</text>
+			</view>
+			<view class="mine-headPic" v-if="token == '' || token == null" @click="goLogin">
+				<view class="mine-img-div">
+					<image src="../../static/imgs/mine/avatar.png" class="mine-img"></image>
 				</view>
-				<view class="mine-headPic" v-if="token == '' || token == null" @click="goLogin">
-					<view class="mine-img-div">
-						<image src="../../static/imgs/mine/avatar.png" class="mine-img"></image>
-					</view>
-					<view class="mine-nick">
-						<text>请登录~</text>
-					</view>
+				<view class="mine-nick">
+					<text>请登录~</text>
 				</view>
-				<view class="mine-headPic" @click="updateMyMsg" v-else>
-					<view class="mine-img-div">
-						<image v-if="headPic" :src="baseFileUrl + '/file/' + headPic" mode="aspectFill"
-							class="mine-img"></image>
-						<image v-else src="../../static/imgs/mine/avatar.png" mode="aspectFill" class="mine-img">
-						</image>
-					</view>
-					<view class="mine-nick">
-						<text style="font-size: 30rpx">{{ nick }}</text>
-						<view style="margin-top: 16rpx; font-size: 24rpx">
-							美好总会如期而至
-						</view>
+			</view>
+			<view class="mine-headPic" @click="updateMyMsg" v-else>
+				<view class="mine-img-div">
+					<image v-if="headPic" :src="url + '/file/' + headPic" mode="aspectFill" class="mine-img"></image>
+					<image v-else src="../../static/imgs/mine/avatar.png" mode="aspectFill" class="mine-img"></image>
+				</view>
+				<view class="mine-nick">
+					<text style="font-size: 30rpx">{{ nick }}</text>
+					<view style="margin-top: 16rpx; font-size: 24rpx">
+						美好总会如期而至
 					</view>
 				</view>
-				<view class="mine-integral">
-					<view class="integral-left">
-						<image v-if="integralNum < 10000" style="width: 30rpx;height: 26rpx;"
-							src="../../static/imgs/mine/normal.png" mode="aspectFill"></image>
-						<image v-else style="width: 33rpx;height: 29rpx;" src="../../static/imgs/mine/impotent.png"
-							mode="aspectFill"></image>
-						<text>{{gradeMembership(integralNum)}}</text>
-					</view>
-					<view class="integral-right">
-						<navigator url="../../minePackage/integral" hover-class="none">
-							<text style="font-size: 20rpx;">积分</text>
-							<text style="font-size: 50rpx;margin-left: 10rpx;">{{integralNum}}</text>
-						</navigator>
-					</view>
-				</view>
-
 			</view>
 		</view>
 		<view class="mine-main">
 			<view class="main-top">
-				<view @click="goInventory" v-if="userPermissions.hermes_stock">
+				<view @click="goInventory" v-if="role == 'peer' || role == 'admin'">
 					<view class="top-one">
 						<view class="one-font">
-							<text>爱马仕库存</text>
+							<text>包包库存</text>
 						</view>
 						<view class="one-img">
 							<image src="../../static/imgs/mine/right.png" mode="aspectFill"></image>
 						</view>
 					</view>
 				</view>
-				<view @click="goBillSummary" v-if="userPermissions.hermes_bill">
-					<view class="top-one">
-						<view class="one-font">
-							<text>爱马仕账单</text>
-						</view>
-						<view class="one-img">
-							<image src="../../static/imgs/mine/right.png" mode="aspectFill"></image>
-						</view>
-					</view>
-				</view>
-				<navigator url="../../hermesReport/hermesReport" v-if="userPermissions.hermes_bill">
-					<view class="top-one">
-						<view class="one-font">
-							<text>统计报表</text>
-						</view>
-						<view class="one-img">
-							<image src="../../static/imgs/mine/right.png" mode="aspectFill"></image>
-						</view>
-					</view>
-				</navigator>
-			</view>
-			<view class="main-top main-center">
-				<view @click="goFinishedProduct" v-if="userPermissions.jewelry_stock1">
+				<view @click="goFinishedProduct" v-if="role == 'admin'">
 					<view class="top-one">
 						<view class="one-font">
 							<text>珠宝成品库存</text>
@@ -90,20 +48,10 @@
 						</view>
 					</view>
 				</view>
-				<view @click="goRawMaterial" v-if="userPermissions.jewelry_stock2">
+				<view @click="goRawMaterial" v-if="role == 'admin'">
 					<view class="top-one">
 						<view class="one-font">
 							<text>珠宝原材料库存</text>
-						</view>
-						<view class="one-img">
-							<image src="../../static/imgs/mine/right.png" mode="aspectFill"></image>
-						</view>
-					</view>
-				</view>
-				<view @click="goSaleReport" v-if="userPermissions.jewelry_saleReport">
-					<view class="top-one">
-						<view class="one-font">
-							<text>珠宝销售报表</text>
 						</view>
 						<view class="one-img">
 							<image src="../../static/imgs/mine/right.png" mode="aspectFill"></image>
@@ -209,17 +157,13 @@
 	export default {
 		data() {
 			return {
-				baseFileUrl: this.$baseFileUrl,
+				url: this.$baseFileUrl,
 				title: "我的页面",
 				role: uni.getStorageSync("role"),
 				headPic: uni.getStorageSync("headPic"),
 				nick: uni.getStorageSync("nick"),
 				token: uni.getStorageSync("token"),
-				userPermissions: {},
 				height: null,
-
-
-				integralNum: 0,
 			};
 		},
 		onLoad() {
@@ -229,70 +173,24 @@
 				success: (data) => {
 					// 将其赋值给this
 					this.height = data.statusBarHeight;
-					console.log('height');
-					console.log(this.height);
 				},
 			});
 		},
 		onShow() {
+			this.role = uni.getStorageSync("role");
+			this.nick = uni.getStorageSync("nick");
+			this.headPic = uni.getStorageSync("headPic");
+			console.log(this.headPic);
 			this.token = uni.getStorageSync("token");
-
+			console.log("token", this.token);
 			// 通过组件定义的ref调用uni-popup方法 ,如果传入参数 ，type 属性将失效 ，仅支持 ['top','left','bottom','right','center']
 			if (this.token == "" || this.token == null) {
 				this.$nextTick(() => {
 					this.$refs.popup.open();
 				});
-			} else {
-				uni.request({
-					url: this.$baseFileUrl + '/userMsg',
-					method: 'GET',
-					header: {
-						'content-type': 'application/json',
-						'token': this.token
-					},
-					complete: (ret) => {
-						if (this.checkBack(ret, true) == true) {
-							this.setUserInfo(ret);
-							this.role = uni.getStorageSync("role");
-							this.nick = uni.getStorageSync("nick");
-							this.integralNum = uni.getStorageSync("totalIntegral");
-							this.headPic = uni.getStorageSync("headPic");
-
-							this.token = uni.getStorageSync("token");
-
-
-							this.userPermissions = getApp().globalData.userInfo.userPermissions;
-
-							this.$isResolve();
-						} else {
-							this.$isResolve();
-						}
-					},
-				})
-
-				this.chat_updateReddot();
 			}
 		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
-		},
 		methods: {
-			// 会员等级
-			gradeMembership(grade) {
-				if (grade == 0) {
-					return '新晋会员'
-				} else if (grade > 0 && grade < 10000) {
-					return '普通会员'
-				} else if (grade > 9999 && grade < 50000) {
-					return '白银会员'
-				} else if (grade > 49999 && grade < 300000) {
-					return '黄金会员'
-				} else if (grade > 299999 && grade <= 1000000) {
-					return '铂金会员'
-				} else if (grade > 1000000) {
-					return '钻石会员'
-				}
-			},
 			// 修改信息
 			updateMyMsg() {
 				if (this.token == "" || this.token == null) {
@@ -342,23 +240,32 @@
 			// 退出登录
 			logout() {
 				if (this.token !== "" && this.token !== null) {
-					uni.setStorageSync("userId", '');
-					uni.setStorageSync("token", '');
-					uni.setStorageSync("role", '');
-					uni.setStorageSync("nick", '');
-					uni.setStorageSync("headPic", '');
-					uni.setStorageSync("phoneNumber", '');
-					uni.setStorageSync("totalIntegral", '')
+					let userInfo = {};
+					userInfo.userId = 0;
+					userInfo.userRole = "";
+					userInfo.userToken = "";
+					userInfo.userNick = "";
+					userInfo.userHeadPic = "";
+					userInfo.phoneNumber = "";
+
+					console.log(userInfo);
+
+					getApp().globalData.userInfo = userInfo;
+					uni.setStorageSync("userId", userInfo.userId);
+					uni.setStorageSync("token", userInfo.userToken);
+					uni.setStorageSync("role", userInfo.userRole);
+					uni.setStorageSync("nick", userInfo.userNick);
+					uni.setStorageSync("headPic", userInfo.userHeadPic);
+					uni.setStorageSync("phoneNumber", userInfo.phoneNumber);
 					uni.setStorageSync("address", '');
 					this.token = "";
 					this.role = "";
-					uni.closeSocket({
 
-					})
 					uni.navigateTo({
 						url: "./login",
 					});
 				} else {
+					// this.$refs.popup.open();
 					uni.navigateTo({
 						url: "./login",
 					});
@@ -385,16 +292,6 @@
 					});
 				}
 			},
-			// 包包帐单
-			goBillSummary() {
-				if (this.token == "" || this.token == null) {
-					this.$refs.popup.open();
-				} else {
-					uni.navigateTo({
-						url: "../../minePackage/billSummary",
-					});
-				}
-			},
 			// 珠宝成品
 			goFinishedProduct() {
 				if (this.token == "" || this.token == null) {
@@ -412,16 +309,6 @@
 				} else {
 					uni.navigateTo({
 						url: "../../jewelryPackage/jewelryMaterial",
-					});
-				}
-			},
-			// 销售报表
-			goSaleReport() {
-				if (this.token == "" || this.token == null) {
-					this.$refs.popup.open();
-				} else {
-					uni.navigateTo({
-						url: "../../jewelryPackage/saleReport",
 					});
 				}
 			},
@@ -444,7 +331,7 @@
 						url: "../../minePackage/footprint",
 					});
 				}
-			}
+			},
 		},
 	};
 </script>
@@ -455,11 +342,8 @@
 		background-color: #f9f9f9;
 
 		.mine-top {
-			height: 442rpx;
-			display: flex;
-			flex-direction: column;
 			background: url(../../static/imgs/mine/background.png) no-repeat;
-			background-size: 100%;
+			background-size: 100% 100%;
 
 			.mine-title {
 				height: 44px;
@@ -470,7 +354,7 @@
 			}
 
 			.mine-headPic {
-				padding: 10rpx 40rpx 0rpx 40rpx;
+				padding: 40rpx 40rpx 40px;
 				display: flex;
 				align-items: center;
 
@@ -495,34 +379,10 @@
 					color: #ffffff;
 				}
 			}
-
-			.mine-integral {
-				padding: 0 40rpx 20rpx;
-				display: flex;
-				justify-content: space-between;
-				color: #1e8d7f;
-
-				.integral-left {
-					display: flex;
-					align-items: center;
-
-					text {
-						margin-left: 10rpx;
-						font-size: 32rpx;
-					}
-				}
-			}
 		}
 
 		.mine-main {
 			padding: 30rpx 40rpx;
-			/*#ifdef MP-WEIXIN*/
-			padding-bottom: 30rpx;
-			/*#endif*/
-			/*#ifndef MP-WEIXIN*/
-			padding-bottom: 160rpx;
-			/*#endif*/
-
 			background-color: #f9f9f9;
 
 			.main-top {

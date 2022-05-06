@@ -13,7 +13,7 @@
               : '#fff'
             : styleType === 'text'
               ? '#000'
-              : activeColor}" 
+              : activeColor}"
 			 class="segmented-control__text">{{ item }}</text>
 		</view>
 	</view>
@@ -92,7 +92,7 @@
 		box-sizing: border-box;
 		/* #endif */
 		flex-direction: row;
-		height: 70rpx;
+		height: 36px;
 		overflow: hidden;
 		/* #ifdef H5 */
 		cursor: pointer;
@@ -135,8 +135,8 @@
 	}
 
 	.segmented-control__text {
-		font-size: 30rpx;
-		//line-height: 20px;
+		font-size: 16px;
+		line-height: 20px;
 		text-align: center;
 	}
 </style>

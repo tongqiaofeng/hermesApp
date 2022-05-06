@@ -17,8 +17,8 @@
 				<uni-list-item title="编号" :note="materialDetails.productNumber"></uni-list-item>
 				<uni-list-item title="仓库" :rightText="materialDetails.storageName"></uni-list-item>
 				<uni-list-item title="名称" :rightText="materialDetails.materialName"></uni-list-item>
-				<uni-list-item v-if="materialDetails.productType" title="类型" :rightText="materialDetails.productType">
-				</uni-list-item>
+				<uni-list-item v-if="materialDetails.productType" title="类型"
+					:rightText="materialDetails.productType"></uni-list-item>
 				<uni-list-item title="数量" :rightText="materialDetails.number + ''"></uni-list-item>
 				<uni-list-item v-if="materialDetails.weight > 0.0" title="重量"
 					:rightText="materialDetails.weight + '' + materialDetails.chargeUnit"></uni-list-item>
@@ -34,14 +34,14 @@
             materialDetails.wholesalePrice > 0 ||
             materialDetails.retailPrice > 0
           " title="价格" type="line"></uni-section>
-				<uni-list-item v-if="materialDetails.unitPrice > 0" :title="'单价/' + materialDetails.chargeUnit"
+				<uni-list-item v-if="materialDetails.unitPrice > 0" title="单价"
 					:rightText="materialDetails.unitPrice + ' ' + materialDetails.currency"></uni-list-item>
 				<uni-list-item v-if="materialDetails.unitPrice > 0" title="总价"
 					:rightText="materialDetails.chargeUnit == '粒' || materialDetails.chargeUnit == '件' ?  parseInt(materialDetails.unitPrice*materialDetails.number) + ' ' + materialDetails.currency : parseInt(materialDetails.unitPrice*materialDetails.weight) + ' ' + materialDetails.currency">
 				</uni-list-item>
-				<uni-list-item v-if="materialDetails.wholesalePrice > 0" :title="'批发单价/' + materialDetails.chargeUnit"
+				<uni-list-item v-if="materialDetails.wholesalePrice > 0" title="批发单价"
 					:rightText="materialDetails.wholesalePrice + ' ' + materialDetails.currency"></uni-list-item>
-				<uni-list-item v-if="materialDetails.retailPrice > 0" :title="'零售单价/' + materialDetails.chargeUnit"
+				<uni-list-item v-if="materialDetails.retailPrice > 0" title="零售单价"
 					:rightText="materialDetails.retailPrice + ' ' + materialDetails.currency"></uni-list-item>
 
 				<uni-section v-if="
@@ -58,8 +58,8 @@
 				<view v-if="materialDetails.certs.length > 0" class="infoItem">
 					<view>证书编号：</view>
 					<view class="content">
-						<view v-for="(cert, index) in materialDetails.certs" :key="index">
-							<navigator :url="'./materialDetails?productNumber=' + cert" hover-class="none">
+						<view v-for="(cert, index) in materialDetails.certs" :key="index" >
+							<navigator :url="'./materialDetails?productNumber=' + cert">
 								{{ cert }}
 							</navigator>
 						</view>
@@ -98,18 +98,6 @@
 					</view>
 				</view>
 			</view>
-		</view>
-		<view class="login-page">
-			<uni-popup ref="popup" type="center">
-				<view class="popup-container">
-					<view class="popup-one">您还没有登录</view>
-					<view class="popup-two">登录即刻开启品质生活</view>
-					<view class="popup-login" @click="goToLogin">
-						<image src="../static/imgs/mine/login.png" mode="aspectFill"></image>
-					</view>
-					<view class="popup-cancel" @click="closePopup">取消</view>
-				</view>
-			</uni-popup>
 		</view>
 	</view>
 </template>
@@ -160,7 +148,7 @@
 
 				//设置默认的分享参数
 				share: {
-					title: 'PAULIANA 宝莉安娜高级珠宝',
+					title: '包治百病 BZBB.COM',
 					path: "/jewelryPackage/materialDetails?id=" + this.detailId,
 					imageUrl: '',
 					desc: '',
@@ -168,24 +156,15 @@
 				},
 			};
 		},
-
+		
 		onLoad(option) {
-
-			let token = uni.getStorageSync("token");
-			if (token == "" || token == null) {
-				this.$nextTick(() => {
-					this.$refs.popup.open();
-				});
-			} else {
-				if (option.id != undefined)
-					this.detailId = option.id;
-				else
-					this.productNumber = option.productNumber;
-				this.getDetails();
-			}
-		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
+			console.log("详情");
+			console.log(option.id);
+			if(option.id != undefined)
+				this.detailId = option.id;
+			else
+				this.productNumber = option.productNumber;
+			this.getDetails();
 		},
 		onPullDownRefresh() {
 			uni.showLoading({
@@ -245,12 +224,16 @@
 				uni.showLoading({
 					title: "加载中......",
 				});
+				
+				console.log('3333333333333');
+				console.log(this.detailId);
+				console.log(this.productNumber);
 				let url = ''
-				if (this.detailId > 0)
+				if(this.detailId > 0)
 					url = "/jewelleryInfo?id=" + this.detailId;
 				else
 					url = "/jewelleryInfo?productNumber=" + this.productNumber;
-
+					
 				uni.request({
 					url: this.$baseJewelleryUrl + url,
 					header: {
@@ -259,9 +242,6 @@
 					},
 					complete: (ret) => {
 						uni.hideLoading();
-
-						if (this.checkBack(ret, true) == false) return;
-
 						this.materialDetails = ret.data.materialInfo;
 						console.log(this.materialDetails)
 
@@ -310,17 +290,6 @@
 				}
 				return "";
 			},
-			// 去登录页
-			goToLogin() {
-				this.$refs.popup.close();
-				uni.navigateTo({
-					url: "../pages/mine/login",
-				});
-			},
-			// 关闭去登录
-			closePopup() {
-				this.$refs.popup.close();
-			},
 		},
 	};
 </script>
@@ -348,10 +317,10 @@
 			margin-bottom: 20rpx;
 		}
 
-		.row {
+		.row{
 			display: flex;
 		}
-
+			
 		.item {
 			margin-bottom: 40rpx;
 			color: #666666;
@@ -399,47 +368,6 @@
 
 			.noName {
 				color: #b6bac9;
-			}
-		}
-	}
-
-	.login-page {
-		width: 100%;
-
-		.popup-container {
-			width: 660rpx;
-			height: 507rpx;
-			padding-bottom: 20rpx;
-			margin: 0 auto;
-			text-align: center;
-			background: url(../static/imgs/mine/mineBack.png) no-repeat;
-			background-size: 100% 100%;
-
-			.popup-one {
-				padding-top: 168rpx;
-				font-size: 30rpx;
-				color: #000;
-				font-weight: bold;
-			}
-
-			.popup-two {
-				margin-top: 30rpx;
-				font-size: 26rpx;
-				color: #c3c3c3;
-			}
-
-			.popup-login {
-				margin-top: 73rpx;
-
-				image {
-					width: 358rpx;
-					height: 58rpx;
-				}
-			}
-
-			.popup-cancel {
-				margin-top: 30rpx;
-				font-size: 24rpx;
 			}
 		}
 	}

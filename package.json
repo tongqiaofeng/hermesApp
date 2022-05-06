@@ -11,7 +11,6 @@
         "滑动删除"
     ],
     "dependencies": {
-        "jweixin-module": "^1.6.0",
-        "uview-ui": "^2.0.20"
+        "jweixin-module": "^1.6.0"
     }
 }

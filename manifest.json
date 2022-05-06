@@ -1,9 +1,9 @@
 {
-    "name" : "PAULIANA",
+    "name" : "包治百病",
     "appid" : "__UNI__E950605",
     "description" : "",
-    "versionName" : "1.0.2",
-    "versionCode" : 103,
+    "versionName" : "1.0.0",
+    "versionCode" : 100,
     "transformPx" : false,
     "app-plus" : {
         /* 5+App特有相关 */
@@ -41,9 +41,7 @@
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ]
             },
-            "ios" : {
-                "idfa" : false
-            },
+            "ios" : {},
             /* ios打包配置 */
             "sdkConfigs" : {
                 "ad" : {},
@@ -60,7 +58,7 @@
                     "xxhdpi" : "unpackage/res/icons/144x144.png"
                 },
                 "ios" : {
-                    "appstore" : "unpackage/res/icons/1024x1024.png",
+                    "appstore" : "static/imgs/common/logo.png",
                     "ipad" : {
                         "app" : "unpackage/res/icons/76x76.png",
                         "app@2x" : "unpackage/res/icons/152x152.png",
@@ -91,7 +89,7 @@
     /* 快应用特有相关 */
     "mp-weixin" : {
         /* 小程序特有相关 */
-        "appid" : "wxb3e132c3790e45f4",
+        "appid" : "wxd668456e7c9c5920",
         "setting" : {
             "urlCheck" : false,
             "postcss" : false,

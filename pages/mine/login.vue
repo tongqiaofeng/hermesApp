@@ -3,7 +3,7 @@
 		<view class="login-container">
 			<view class="login-tabs">
 				<view class="phone-login" @click="selectLoginPhone">
-					<view class="font"> 验证码登录 </view>
+					<view class="font"> 手机登录 </view>
 					<view class="line" v-if="selectLogin == 0"></view>
 				</view>
 				<view class="psw-login" @click="selectLoginPsw">
@@ -15,13 +15,13 @@
 				<uni-forms ref="loginFormPhone" :modelValue="userData" :rules="loginPhoneRules">
 					<uni-forms-item name="phoneNumber">
 						<view>
-							<text class="phone-num"> 手机号/邮箱 </text>
+							<text class="phone-num"> 手机号 </text>
 							<view class="phone-main">
 								<image class="phone-img" src="../../static/imgs/mine/login/phone.png" mode="aspectFill">
 								</image>
 								<view class="login-line"></view>
 								<input type="text" class="phone-input" v-model="userData.phoneNumber"
-									placeholder="请输入手机号/邮箱" />
+									placeholder="请输入手机号" />
 							</view>
 						</view>
 					</uni-forms-item>
@@ -51,9 +51,9 @@
 					<image src="../../static/imgs/mine/login/login.png" mode="aspectFill" @click="userLoginPhone">
 					</image>
 				</view>
-				<!-- <navigator url="../../minePackage/register" hover-class="none" class="login-bottom">
+				<navigator url="../../minePackage/register" hover-class="none" class="login-bottom">
 					<text type="default">立即注册</text>
-				</navigator> -->
+				</navigator>
 			</view>
 			<view class="login-main" v-else>
 				<uni-forms ref="loginFormPsw" :modelValue="userData" :rules="loginPswRules">
@@ -87,12 +87,12 @@
 					<image src="../../static/imgs/mine/login/login.png" mode="aspectFill" @click="userLoginPsw"></image>
 				</view>
 				<view class="register-psw">
-					<!-- <navigator url="../../minePackage/register" hover-class="none" class="login-bottom">
+					<navigator url="../../minePackage/register" hover-class="none" class="login-bottom">
 						<text type="default">立即注册</text>
-					</navigator> -->
-					<!-- <navigator url="../../minePackage/password" hover-class="none" class="login-bottom">
+					</navigator>
+					<navigator url="../../minePackage/password" hover-class="none" class="login-bottom">
 						<text type="default" style="color: #000">忘记密码</text>
-					</navigator> -->
+					</navigator>
 				</view>
 			</view>
 		</view>
@@ -105,9 +105,9 @@
 			return {
 				selectLogin: 0,
 				userData: {
-					phoneNumber: "",
+					phoneNumber: "admin_hk",
 					code: "",
-					psw: "",
+					psw: "toptime22",
 				},
 				loginPhoneRules: {
 					phoneNumber: {
@@ -171,7 +171,7 @@
 						complete: (res) => {
 							uni.hideLoading();
 							if (res.statusCode == 200) {
-								this.countDown = setInterval(() => { 
+								this.countDown = setInterval(() => {
 									if (this.count < 1) {
 										this.isGeting = false;
 										this.disable = false;
@@ -186,8 +186,6 @@
 										this.time = this.count-- + "s后可重发";
 									}
 								}, 1000);
-								
-								
 							}
 							if (this.checkBack(res, true) == false) return;
 
@@ -217,45 +215,38 @@
 							},
 							complete: (res) => {
 								console.log("登录啦");
-								//if(res.statusCode==200){
-									uni.hideLoading();
-									
-									if (this.checkBack(res, true) == false){
-										this.$isResolve();
-										return;
-									}
-									
-									uni.setStorageSync("userAddress", JSON.stringify(res.data.address));
-									
-									this.setUserInfo(res);
-									this.$isResolve();
-									
-									
-									//this.chat_connectServer();
-									uni.switchTab({
-										url: "./mine",
-									});
-									
-								//}
+								console.log(res);
+								uni.hideLoading();
 
+								if (this.checkBack(res, true) == false) return;
+								
+								uni.setStorageSync("userAddress", JSON.stringify(res.data.address));
+
+								this.setUserInfo(res);
+								this.$isResolve();
+
+								uni.switchTab({
+									url: "./mine",
+								});
+								
 								// #ifdef MP-WEIXIN
-								// uni.login({
-								// 	complete: (ret) => {
-								// 		console.log('code值');
-								// 		console.log(ret);
-								// 		uni.request({
-								// 			url: this.$baseUrl + "/getOpenId?jsCode=" + ret.code,
-								// 			header: {
-								// 				"content-type": "application/json",
-								// 				token: uni.getStorageSync('token')
-								// 			},
-								// 			complete: (rel) => {
-								// 				console.log('获取openID');
-								// 				console.log(rel);
-								// 			}
-								// 		})
-								// 	}
-								// })
+								uni.login({
+									complete: (ret) => {
+										console.log('code值');
+										console.log(ret);
+										uni.request({
+											url: this.$baseUrl + "/getOpenId?jsCode=" + ret.code,
+											header: {
+												"content-type": "application/json",
+												token: uni.getStorageSync('token')
+											},
+											complete: (rel) => {
+												console.log('获取openID');
+												console.log(rel);
+											}
+										})
+									}
+								})
 								// #endif
 							},
 						});
@@ -285,45 +276,38 @@
 							},
 							complete: (res) => {
 								console.log("登录啦");
-								//if(res.statusCode==200){
-									//console.log(res);
-									uni.hideLoading();
-									
-									if (this.checkBack(res, true) == false){
-										this.$isResolve();
-										return;
-									}
-									
-									uni.setStorageSync("userAddress", JSON.stringify(res.data.address));
-									
-									this.setUserInfo(res);
-									
-									this.$isResolve();
-									//this.chat_connectServer();
-									
-									uni.switchTab({
-										url: "./mine",
-									});
-								//}
+								console.log(res);
+								uni.hideLoading();
+
+								if (this.checkBack(res, true) == false) return;
+								
+								uni.setStorageSync("userAddress", JSON.stringify(res.data.address));
+
+								this.setUserInfo(res);
+								this.$isResolve();
+
+								uni.switchTab({
+									url: "./mine",
+								});
 								
 								// #ifdef MP-WEIXIN
-								// uni.login({
-								// 	complete: (ret) => {
-								// 		console.log('code值');
-								// 		console.log(ret);
-								// 		uni.request({
-								// 			url: this.$baseUrl + "/getOpenId?jsCode=" + ret.code,
-								// 			header: {
-								// 				"content-type": "application/json",
-								// 				token: uni.getStorageSync('token')
-								// 			},
-								// 			complete: (rel) => {
-								// 				console.log('获取openID');
-								// 				console.log(rel);
-								// 			}
-								// 		})
-								// 	}
-								// })
+								uni.login({
+									complete: (ret) => {
+										console.log('code值');
+										console.log(ret);
+										uni.request({
+											url: this.$baseUrl + "/getOpenId?jsCode=" + ret.code,
+											header: {
+												"content-type": "application/json",
+												token: uni.getStorageSync('token')
+											},
+											complete: (rel) => {
+												console.log('获取openID');
+												console.log(rel);
+											}
+										})
+									}
+								})
 								// #endif
 							},
 						});
