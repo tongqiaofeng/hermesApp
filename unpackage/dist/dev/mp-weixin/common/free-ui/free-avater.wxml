@@ -1,1 +1,0 @@
-<image class="{{[type]}}" style="{{'border-radius:50%;'+(getStyle)}}" src="{{src?src:'/static/imgs/userpic.png'}}" mode="aspectFill" data-event-opts="{{[['tap',[['clickEvent',['$event']]]]]}}" bindtap="__e"></image>

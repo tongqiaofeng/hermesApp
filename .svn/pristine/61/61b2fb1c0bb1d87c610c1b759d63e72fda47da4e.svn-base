@@ -1,0 +1,479 @@
+<template>
+	<view>
+
+		<!-- <view class="">{{flushCnt}}</view> -->
+
+		<scroll-view scroll-y="true" class="msgLst" :style="{height: scrollHeight+ 'px'}"
+			:scroll-into-view="scrollIntoView" scroll-with-animation="true">
+
+			<view v-if="loadMore && msgList.length > 0" class="loadMore" @click="loadMoreMsg()">
+				查看更多消息
+			</view>
+
+			<view v-if="serviceTip && serviceMsgId == 0" class="item">
+				<view class="tip">
+					<view class="msg" style="width: 500rpx;">
+						<view
+							style="text-align: center; font-weight: bold; padding-bottom: 20rpx; margin-bottom: 20rpx; color: #333333; border-bottom: 1rpx solid #85dbd0;">
+							提示</view>
+						<text>{{serviceTip}}</text>
+					</view>
+				</view>
+			</view>
+			
+			<view class="item" v-for="(msg, index) in msgList" :key="index" :id="'msg_'+ index">
+				<view style="margin-bottom: 20rpx; font-size: 28rpx;">
+
+					<!-- 时间显示 -->
+					<view v-if="msg.showTime" class="time">
+						{{msg.showTime}}
+					</view>
+
+					<!-- 消息 -->
+					<view v-if="isSelf(msg.sender)" style="display: flex;">
+						<view style="flex: 1;"></view>
+						<text v-if="msg.contentType == 0" class="msg"
+							style="background-color: #85dbd0;">{{msg.contentText}}</text>
+						<image v-else-if="msg.contentType == 1" class="msgPic" :src="msg.contentPic" mode="widthFix"
+							@click="previewImage(msg.contentPic)"></image> 
+						<!-- <image v-if="msg.contentType == 0" src="../../static/imgs/chat/r.png" mode="aspectFill" style="width: 30rpx; height: 30rpx; margin-left: -8rpx; margin-top: 20rpx;"></image> -->
+						<image class="head" style="margin-left: 20rpx;" :src="getUserHead(msg.sender)" mode="aspectFill"></image>
+
+						<!-- <view v-if="msg.readStatus == -1">发送中</view> -->
+						<!-- <view @click="chat_deleteMsgCmd(msg.receiver, msg.id)">撤销</view> -->
+					</view>
+					<view v-else style="display: flex;">
+						<image class="head" :src="getUserHead(msg.sender)" mode="aspectFill"></image>
+						<!-- <image v-if="msg.contentType == 0" src="../../static/imgs/chat/l.png" mode="aspectFill" style="width: 30rpx; height: 30rpx; margin-right: -8rpx; margin-top: 20rpx;"></image> -->
+						<text v-if="msg.contentType == 0" class="msg">{{msg.contentText}}</text>
+						<image v-else-if="msg.contentType == 1" class="msgPic" :src="msg.contentPic" mode="widthFix"
+							@click="previewImage(msg.contentPic)"></image>
+						<!-- <view v-if="msg.readStatus == -1">发送中</view> -->
+					</view>
+
+					<!-- 提示 -->
+					<view v-if="serviceTip && msg.id == serviceMsgId" class="tip">
+						<view class="msg" style="width: 500rpx;">
+							<view
+								style="text-align: center; font-weight: bold; padding-bottom: 20rpx; margin-bottom: 20rpx; color: #333333; border-bottom: 1rpx solid #85dbd0;">
+								提示</view>
+						<text>{{serviceTip}}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+
+			<view style="height: 10rpx;"></view>
+		</scroll-view>
+
+		<view class="send">
+			<textarea class="sendText" type="text" value="" v-model="content" @click="changeMode(0)" />
+			<button v-if="content.length > 0" class="sendBtn" type="default" @click="sendMsg(content, 0)">发送</button>
+			<image v-else class="sendBtn2" src="../../static/imgs/chat/add.png" mode="aspectFill" @click="changeMode()">
+			</image>
+		</view>
+
+		<view v-if="mode == 1" class="picMode">
+			<view class="" @click="actionMode(0)">
+				<image class="btnPic" src="../../static/imgs/chat/pic.png" mode="aspectFill"></image>
+				<view class="btnTxt">相册</view>
+			</view>
+			<view class="" @click="actionMode(1)">
+				<image class="btnPic" src="../../static/imgs/chat/video.png" mode="aspectFill"></image>
+				<view class="btnTxt">拍摄</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import $T from "@/common/free-lib/time.js"
+	export default {
+		data() {
+			return {
+				baseFileUrl: this.$baseFileUrl,
+				userId: '',
+				content: '',
+				flushCnt: 0,
+				msgList: [],
+				msgPicList: [],
+				serviceTip: '',
+				serviceMsgId: -1,
+				scrollHeight: 100,
+				scrollIntoView: '',
+				mode: 0,
+				loadMore: true,
+			}
+		},
+		onLoad(e) {
+			this.userId = e.id;
+			getApp().globalData.chatUserId = this.userId;
+
+			if (e.name) {
+				uni.setNavigationBarTitle({
+					title: e.name
+				});
+			}
+
+			uni.$on('user-msg-update', (data) => {
+				this.flushData();
+				//alert('user-msg-update');
+			})
+
+			setTimeout(() => {
+				this.checkServiceTip();
+			}, 1500)
+				
+		},
+		onShow() {
+			this.chat_updateUserMsg(this.userId);
+		},
+		onReady() {
+			this.hidePageNavInWechatBrowser();
+			this.calcHeight();
+		},
+		methods: {
+			sendMsg(txt, type) {
+				this.chat_sendMsgToUserCmd(this.userId, txt, type);
+				this.content = '';
+				this.changeMode(0);
+			},
+			flushData() {
+				let userIdx = this.chat_findUser(this.userId);
+				if (userIdx > -1) {
+					let oldStartMsgId = 0;
+					let oldEndMsgId = 0;
+					if (this.msgList.length > 0) {
+						oldStartMsgId = this.msgList[0].id;
+						oldEndMsgId = this.msgList[this.msgList.length - 1].id;
+					}
+					this.msgList = [];
+					this.msgPicList = [];
+					let temp = {};
+					for (let i = 0; i < getApp().globalData.userList[userIdx].msgList.length; ++i) {
+						temp = getApp().globalData.userList[userIdx].msgList[i];
+						//处理图片
+						if (temp.contentType == 1) {
+							temp.contentPic = this.baseFileUrl + '/file/' + temp.contentText;
+							this.msgPicList.push(temp.contentPic);
+						}
+
+						this.msgList.push(temp);
+
+						//处理时间
+						this.msgList[i].showTime = this.getMsgTime(i);
+					}
+
+
+					if (this.msgList.length > 0) {
+						let newStartMsgId = this.msgList[0].id;
+						let newEndMsgId = this.msgList[this.msgList.length - 1].id;
+
+						if (oldEndMsgId != newEndMsgId)
+							this.scrollToMsg();
+
+						if (this.msgList[0].isLastHistory)
+							this.loadMore = false;
+						else
+							this.loadMore = true;
+					} else {
+						this.loadMore = false;
+					}
+					
+					//if ((this.serviceTip == '' || this.serviceMsgId < 1) && this.msgList.length > 0) {
+						this.checkServiceTip();
+					//}
+				}
+				
+				this.flushCnt++;
+			},
+			getMsgTime(idx) {
+				let time1 = 0;
+				let time2 = $T.ISO8601DateStr2Date(this.msgList[idx].time);
+				if (idx > 0) {
+					time1 = $T.ISO8601DateStr2Date(this.msgList[idx - 1].time);
+				}
+				let ret = $T.getChatTime(time2, time1);
+				return ret;
+			},
+			scrollToMsg() {
+				setTimeout(() => {
+					this.scrollIntoView = 'msg_' + (this.msgList.length - 1);
+				}, 200)
+			},
+			loadMoreMsg() {
+				this.chat_getMsgHistoryCmd(this.userId, true);
+			},
+			calcHeight() {
+				let that = this;
+				uni.getSystemInfo({
+					success(res) {
+						let windownHeight = res.windowHeight //windoHeight为窗口高度，主要使用的是这个
+						let svTop = 0;
+						let sv = uni.createSelectorQuery().select(".msgLst"); //想要获取高度的元素名（class/id）
+						sv.boundingClientRect(data => {
+							svTop = data.top //计算高度：元素高度=窗口高度-元素距离顶部的距离（data.top）
+						}).exec()
+
+						let send = uni.createSelectorQuery().select(".send"); //想要获取高度的元素名（class/id）
+						send.boundingClientRect(data => {
+							that.scrollHeight = windownHeight - svTop - data.height;
+						}).exec()
+
+						console.log(that.scrollHeight);
+					}
+				})
+			},
+			isSelf(sender) {
+				if (getApp().globalData.chatInfo.userId == sender)
+					return true;
+				else
+					return false;
+			},
+			getUserHead(userId) {
+				let headPic = '';
+				if (getApp().globalData.userInfo.userId == userId) {
+					headPic = getApp().globalData.userInfo.userHeadPic;
+				} else {
+					let userList = getApp().globalData.userList;
+					for (let i = 0; i < userList.length; ++i) {
+						if (userList[i].userId == userId) {
+							headPic = userList[i].head_pic;
+							break;
+						}
+					}
+				}
+
+				if (headPic)
+					return this.$baseFileUrl + '/file/' + headPic;
+				else
+					return "../../static/imgs/mine/avatar.png";
+			},
+			changeMode(mode) {
+				if (mode == 0) {
+					if (this.mode == 1) {
+						this.mode = 0;
+						this.scrollHeight += uni.upx2px(300);
+					}
+				} else if (this.mode == 0) {
+					this.mode = 1;
+					this.scrollHeight -= uni.upx2px(300);
+				} else {
+					this.mode = 0;
+					this.scrollHeight += uni.upx2px(300);
+				}
+			},
+			actionMode(type) {
+				if (type == 0) {
+					//图片
+					uni.chooseImage({
+						count: 9,
+						sourceType: ['album'], //从相册选择
+						success: (res) => {
+							console.log("图片选择成功", res);
+							this.sendpic(res)
+						}
+					})
+				} else if (type == 1) {
+					//拍摄
+					uni.chooseImage({
+						count: 9,
+						sourceType: ['camera'], //从选择
+						success: (res) => {
+							this.sendpic(res)
+						}
+					})
+				}
+			},
+			// 发送图片
+			sendpic(res) {
+				const tempFilePaths = res.tempFilePaths;
+				let promiseWorkList = [];
+				for (let i = 0; i < tempFilePaths.length; i++) {
+					promiseWorkList.push(
+						new Promise((resolve, reject) => {
+							console.log('上传项', tempFilePaths[i]);
+							uni.uploadFile({
+								url: this.$baseFileUrl + "/upload",
+								fileType: "image",
+								filePath: tempFilePaths[i],
+								name: "upload-images",
+								success: (res) => {
+									console.log('上传成功', res);
+									if (res.statusCode === 200) {
+										console.log('图片信息', res.data);
+										let pic = res.data.split("|")[0]
+										this.sendMsg(pic, 1)
+									} else {
+										console.log()("failt to upload image:", res);
+										uni.showToast({
+											title: "图片上传失败",
+											icon: "none",
+											duration: 2000,
+										});
+									}
+								},
+								fail: (res) => {
+									console.log("failt to upload image:", res);
+									uni.showToast({
+										title: "网络连接失败",
+										icon: "none",
+										duration: 2000,
+									});
+								},
+							})
+						})
+					)
+				};
+			},
+			// 预览图片
+			previewImage(url) {
+				uni.previewImage({
+					current: url,
+					urls: this.msgPicList,
+					indicator: "default"
+				})
+			},
+			//
+			checkServiceTip() {
+				if(this.serviceTip)
+					return;
+					
+				uni.request({
+					method: 'GET',
+					url: this.$baseUrl + '/newContactGet',
+					header: {
+						"content-type": "application/json"
+					},
+					success: (res) => {
+						let userList = res.data;
+
+						let tip = '';
+						for (let i = 0; i < userList.length; ++i) {
+							if (userList[i].id == this.userId) {
+								tip = userList[i].tag.replace(/<br>/g, '\n');
+								break;
+							}
+						}
+
+						if (tip) {
+							this.serviceTip = tip;
+							if (this.msgList.length > 0)
+								this.serviceMsgId = this.msgList[this.msgList.length - 1].id;
+							else
+								this.serviceMsgId = 0;
+						}
+
+					}
+				})
+
+			}
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.msgLst {
+		background-color: #EDEDED;
+
+		.loadMore {
+			text-align: center;
+			font-size: 28rpx;
+			color: #444444;
+			margin: 20rpx;
+		}
+
+		.item {
+			margin: 20rpx;
+			font-size: 28rpx;
+
+			.head {
+				width: 80rpx;
+				height: 80rpx;
+				border-radius: 80rpx;
+				margin-right: 20rpx;
+			}
+
+			.time {
+				text-align: center;
+				font-size: 26rpx;
+				color: #888888;
+				padding: 20rpx;
+			}
+
+			.msg {
+				max-width: 450rpx;
+				word-wrap: break-word;
+				background-color: #FFFFFF;
+				border-radius: 10rpx;
+				padding: 20rpx;
+			}
+
+			.msgPic {
+				max-width: 250rpx;
+				background-color: #FFFFFF;
+				border-radius: 10rpx;
+				border: 1rpx solid #CCCCCC;
+			}
+
+			.tip {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin-top: 60rpx;
+				margin-bottom: 40rpx;
+			}
+		}
+	}
+
+	.send {
+		background-color: #F7F7F7;
+		padding: 20rpx;
+		display: flex;
+		align-items: center;
+
+		.sendText {
+			height: 80rpx;
+			line-height: 80rpx;
+			padding: 0rpx 20rpx;
+			font-size: 32rpx;
+			flex: 1;
+			border-radius: 10rpx;
+			background-color: #FFFFFF;
+			margin-right: 20rpx;
+		}
+
+		.sendBtn {
+			font-size: 30rpx;
+			height: 80rpx;
+			line-height: 80rpx;
+			background-color: #85dbd0;
+			color: #FFFFFF;
+		}
+
+		.sendBtn2 {
+			width: 50rpx;
+			height: 50rpx;
+		}
+	}
+
+	.picMode {
+		height: 300rpx;
+		padding: 40rpx 80rpx;
+		background-color: #F7F7F7;
+		border-top: 1rpx solid #E3E3E3;
+		display: flex;
+
+		.btnPic {
+			width: 100rpx;
+			height: 100rpx;
+			margin-right: 80rpx;
+		}
+
+		.btnTxt {
+			font-size: 26rpx;
+			width: 100rpx;
+			text-align: center;
+		}
+	}
+</style>

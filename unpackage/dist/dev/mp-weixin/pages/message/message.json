@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "消息",
-  "usingComponents": {
-    "free-media-list": "/common/free-ui/free-media-list",
-    "free-popup": "/common/free-ui/free-popup",
-    "free-avater": "/common/free-ui/free-avater"
-  }
-}

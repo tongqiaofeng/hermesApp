@@ -1,1 +1,0 @@
-{"version":3,"sources":["uni-app:///main.js"],"names":["createPage","Page"],"mappings":";;;;;;;;;;kDAAA;AACA;AACA,iG;AACAA,UAAU,CAACC,kBAAD,CAAV,C","file":"package/inventory.js","sourcesContent":["import 'uni-pages';\nimport Vue from 'vue'\nimport Page from './package/inventory.vue'\ncreatePage(Page)"],"sourceRoot":""}

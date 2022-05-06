@@ -1,1 +1,0 @@
-{"version":3,"sources":["uni-app:///main.js"],"names":["createPage","Page"],"mappings":";;;;;;;;;;kDAAA;AACA;AACA,mG;AACAA,UAAU,CAACC,iBAAD,CAAV,C","file":"pages/index/payOrder.js","sourcesContent":["import 'uni-pages';\nimport Vue from 'vue'\nimport Page from './pages/index/payOrder.vue'\ncreatePage(Page)"],"sourceRoot":""}
