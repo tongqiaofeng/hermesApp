@@ -1,0 +1,1 @@
+<view><view><text>物流单号：</text>{{''+logisMsg.mailNo+''}}</view><view><uni-steps vue-id="6b7b75dc-1" options="{{[{title:'买家下单',desc:'2018-11-11'}]}}" direction="column" active="{{logisMsg.routes.length-1}}" activeColor="#85dbd0" bind:__l="__l"></uni-steps></view></view>

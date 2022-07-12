@@ -1,0 +1,136 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.return-detail-container.data-v-773faf50 {
+  height: 100vh;
+  background-color: #f1f1f1;
+}
+.return-detail-container .detail-top.data-v-773faf50 {
+  padding: 0 24rpx 20rpx;
+  background: linear-gradient(to right, #68decf, #6BCDA5);
+}
+.return-detail-container .detail-top .top-title.data-v-773faf50 {
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+.return-detail-container .detail-top .top-title .left-icon.data-v-773faf50 {
+  width: 18rpx;
+  height: 30rpx;
+}
+.return-detail-container .detail-top .top-title .title.data-v-773faf50 {
+  margin-left: 40rpx;
+  font-size: 36rpx;
+}
+.return-detail-container .detail-top .top-main.data-v-773faf50 {
+  margin-top: 36rpx;
+  padding: 39rpx 30rpx 40rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+}
+.return-detail-container .detail-top .top-main .main-title-time.data-v-773faf50 {
+  margin-bottom: 47rpx;
+  text-align: left;
+}
+.return-detail-container .detail-top .top-main .main-title-time .title.data-v-773faf50 {
+  font-size: 34rpx;
+  color: #000;
+  font-weight: bold;
+}
+.return-detail-container .detail-top .top-main .main-title-time .time.data-v-773faf50 {
+  margin-top: 9rpx;
+  color: #999999;
+  font-size: 22rpx;
+}
+.return-detail-container .detail-product.data-v-773faf50 {
+  margin-top: 20rpx;
+  padding: 0 24rpx;
+}
+.return-detail-container .detail-product .product-msg.data-v-773faf50 {
+  padding: 32rpx 20rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+}
+.return-detail-container .detail-product .product-msg .msg-top.data-v-773faf50 {
+  margin-top: 39rpx;
+  display: flex;
+  justify-content: space-between;
+}
+.return-detail-container .detail-product .product-msg .msg-top .msg-img.data-v-773faf50 {
+  margin-right: 19rpx;
+}
+.return-detail-container .detail-product .product-msg .msg-top .msg-img image.data-v-773faf50 {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 20rpx;
+}
+.return-detail-container .detail-product .product-msg .msg-top .product-right.data-v-773faf50 {
+  padding-bottom: 17rpx;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.return-detail-container .detail-product .product-msg .msg-top .product-right .name.data-v-773faf50 {
+  font-size: 26rpx;
+  text-align: left;
+}
+.return-detail-container .detail-product .product-msg .msg-top .product-right .price-num.data-v-773faf50 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.return-detail-container .detail-product .product-msg .msg-top .product-right .price-num .price.data-v-773faf50 {
+  font-size: 36rpx;
+}
+.return-detail-container .detail-product .product-msg .msg-top .product-right .price-num .num.data-v-773faf50 {
+  color: #999999;
+  font-size: 24rpx;
+}
+.return-detail-container .detail-product .product-msg .msg-every.data-v-773faf50 {
+  margin-top: 40rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.return-detail-container .detail-product .product-msg .msg-every .every-left.data-v-773faf50 {
+  display: flex;
+  align-items: center;
+}
+.return-detail-container .detail-product .product-msg .msg-every .every-left .title.data-v-773faf50 {
+  margin-right: 41rpx;
+  font-size: 24rpx;
+  color: #999999;
+}
+.return-detail-container .detail-product .product-msg .msg-every .every-left .content.data-v-773faf50 {
+  font-size: 24rpx;
+  color: #000;
+}
+.return-detail-container .detail-product .product-msg .msg-every .every-right.data-v-773faf50 {
+  font-size: 24rpx;
+  color: #85DBD0;
+}
+

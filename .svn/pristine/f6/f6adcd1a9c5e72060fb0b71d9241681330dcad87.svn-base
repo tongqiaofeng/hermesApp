@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f9f9f9",
+  "usingComponents": {
+    "uni-data-picker": "/uni_modules/uni-data-picker/components/uni-data-picker/uni-data-picker",
+    "uni-icons": "/uni_modules/uni-icons/components/uni-icons/uni-icons",
+    "uni-easyinput": "/uni_modules/uni-easyinput/components/uni-easyinput/uni-easyinput"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "积压货物",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "easy-loadimage": "/components/easy-loadimage/easy-loadimage"
+  }
+}

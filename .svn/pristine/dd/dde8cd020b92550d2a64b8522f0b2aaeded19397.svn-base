@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "退款/售后详情",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f9f9f9",
+  "enablePullDownRefresh": true,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "uni-steps": "/uni_modules/uni-steps/components/uni-steps/uni-steps"
+  }
+}

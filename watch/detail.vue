@@ -1,0 +1,805 @@
+<template>
+	<view class="detail" v-if="isShow">
+		<uni-swiper-dot :info="imgSrc" :current="current" mode="dot" :dotsStyles="dotsStyles">
+			<swiper class="swiper-box" style="height: 700rpx" @change="swiperChange">
+				<swiper-item v-for="(item, index) in imgSrc" :key="index">
+					<view class="swiper-item" @click="imagePreview(index)">
+						<image :src="item" mode="aspectFill" style="width: 100%; height: 700rpx"></image>
+					</view>
+				</swiper-item>
+			</swiper>
+		</uni-swiper-dot>
+		<view class="price">
+			<view>{{getPrice(detail.price, '￥')}}</view>
+			<view style="margin: 0 40rpx;">/</view>
+			<view>{{getPrice(detail.usPrice, 'USD')}}</view>
+		</view>
+		
+		<view class="name">
+			{{detail.model}}
+		</view>
+		<view class="note">
+			<view class="publicPrice">公价：{{getPrice(detail.publicPrice, '￥', '暂无')}}</view>
+		</view>
+		
+		<uni-segmented-control v-if="tabItems.length > 1" style="background-color: #ffffff" :current="tabCurrent"
+			:values="tabItems" styleType="text" activeColor="#85dbd0" @clickItem="onClickTabItem">
+		</uni-segmented-control>
+
+		<!-- -------------------参数------------------- -->
+		<view class="product-parameter" v-if="tabSelType == 0">
+			<view v-if="tabItems.length == 1">
+				<view class="parameter">参数</view>
+				<view class="parameter-line"></view>
+			</view>
+			<view class="parameter-every">
+				<text>品牌</text>
+				<text>{{ detail.brand }}</text>
+			</view>
+			<view v-if="detail.series" class="parameter-every">
+				<text>系列</text>
+				<text>{{ detail.series }}</text>
+			</view>
+			<view v-if="detail.movementType" class="parameter-every">
+				<text>机芯类型</text>
+				<text>{{ detail.movementType }}</text>
+			</view>
+			<view v-if="detail.dialSize" class="parameter-every">
+				<text>表盘大小</text>
+				<text>{{ detail.dialSize }}</text>
+			</view>
+			<view v-if="detail.crownMaterial" class="parameter-every">
+				<text>表壳材质</text>
+				<text>{{ detail.crownMaterial }}</text>
+			</view>
+			<view v-if="detail.waterproof" class="parameter-every">
+				<text>防水深度</text>
+				<text>{{ detail.waterproof }}米</text>
+			</view>
+			<view v-if="detail.func" class="parameter-every">
+				<text>功能</text>
+				<text>{{ detail.func }}</text>
+			</view>
+		</view>
+
+		<!-- -------------------价格------------------- -->
+		<view class="product-parameter" v-if="tabSelType == 1">
+			<view class="parameter-every" v-if="detail.createTime">
+				<text>入库时间</text>
+				<text>{{
+          detail.createTime + " 【" + detail.stockLoc + "】"
+        }}</text>
+			</view>
+			<view class="parameter-every" v-if="detail.cost">
+				<text>成本价</text>
+				<view>
+					<text style="color: #73d1c6">{{
+            "HKD " + formatNumberRgx(detail.cost)
+          }}</text>
+					<text v-if="role == 'admin'"
+						style="color: #ff8b62; padding-left: 20rpx">{{ "CNY " + formatNumberRgx(detail.cnCost) }}</text>
+				</view>
+			</view>
+			<view class="parameter-every" v-if="detail.pricePeer && detail.pricePeer != 0">
+				<text>同行价</text>
+				<view>
+					<text style="color: #73d1c6">{{
+            "HKD " + formatNumberRgx(detail.pricePeer)
+          }}</text>
+					<text v-if="role == 'admin'"
+						style="color: #ff8b62; padding-left: 20rpx">{{ "CNY " + formatNumberRgx(detail.cnPricePeer) }}</text>
+				</view>
+			</view>
+			<view class="parameter-every" v-if="detail.note">
+				<view style="width: 80px">备注</view>
+				<text>{{ detail.note }}</text>
+			</view>
+		</view>
+
+		<!-- -------------------销售------------------- -->
+		<view class="product-parameter" v-if="tabSelType == 2">
+			<view class="parameter-every" v-if="detail.soldTime">
+				<text>销售时间</text>
+				<text>{{ detail.soldTime }}</text>
+			</view>
+			<view class="parameter-every" v-if="detail.customer">
+				<text>客户名称</text>
+				<text>{{ detail.customer }}</text>
+			</view>
+			<view class="parameter-every" v-if="detail.saleTotalHkPrice">
+				<text>销售金额</text>
+				<view>
+					<text style="color: #73d1c6">{{
+            "HKD " + formatNumberRgx(detail.saleTotalHkPrice)
+          }}</text>
+					<text v-if="role == 'admin'"
+						style="color: #ff8b62; padding-left: 20rpx">{{ "CNY " + formatNumberRgx(detail.saleTotalCnPrice) }}</text>
+				</view>
+			</view>
+			<view class="parameter-every" v-if="detail.saleTotalHkPrice && detail.cost">
+				<text>利润</text>
+				<view>
+					<text style="color: #73d1c6">{{
+            "HKD " +
+            formatNumberRgx(detail.saleTotalHkPrice - detail.cost)
+          }}</text>
+					<text v-if="role == 'admin'" style="color: #ff8b62; padding-left: 20rpx">{{
+              "CNY " +
+              formatNumberRgx(detail.saleTotalCnPrice - detail.cnCost)
+            }}</text>
+				</view>
+			</view>
+		</view>
+
+		<!-- -------------------资金流------------------- -->
+		<view class="product-parameter" v-if="tabSelType == 3">
+			<view v-if="detail.allPaymentList.length > 0" class="step" style="padding-bottom: 40rpx">
+				<view v-for="(inout, index) in detail.allPaymentList" :key="index">
+					<view class="item row">
+						<view class="row" style="display: flex; align-items: center">
+							<view class="dot"></view>
+							<view class="time">{{ inout.time }}</view>
+						</view>
+						<view style="margin-left: 20rpx; flex: 1">
+							<view class="desc">【{{ inout.personName }}】{{ getTradeType(inout.tradeType) }}
+								{{ currency }} {{ formatNumberRgx(inout.totalHkPrice) }}
+								{{ inout.receiveType }} {{ getRateDesc(inout) }}
+							</view>
+							<text selectable="true" v-if="inout.remark" class="note">{{
+                inout.remark
+              }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		
+		<view class="product-bottom">
+			<view class="bottom-left">
+				<view class="left-index" @click="goIndex">
+					<image class="index-img" src="../static/imgs/details/index.png" mode="aspectFit"></image>
+					<view class="index-font">首页</view>
+				</view>
+				<view class="left-index" @click="serviceClick">
+					<image class="index-img" src="../static/imgs/details/service.png" mode="aspectFit"></image>
+					<view class="index-font">客服</view>
+				</view>
+				<view class="left-collect" @click="isCollect">
+					<image class="index-img"
+						:src="detail.isCollect ? collect2 : collect1" mode="aspectFit">
+					</image>
+					<view class="index-font">{{
+            detail.myFavorite == 0 ? "收藏" : "已收藏"
+          }}</view>
+				</view>
+			</view>
+			<!-- #ifdef APP-PLUS || MP-WEIXIN -->
+			<view class="bottom-right">
+				<view class="add-cart" @click="addCart">加入购物车</view>
+				<view class="buy-button" @click="sureOrder">立即购买</view>
+			</view>
+			<!-- #endif -->
+		</view>
+	</view>
+</template>
+
+<script>
+	// import comment from "./comment.vue";
+	export default {
+		data() {
+			return {
+				role: "",
+				token: "",
+				currency: "",
+				detail: {},
+				imgSrc: [],
+				dotsStyles: {
+					width: 6,
+					height: 6,
+					backgroundColor: "#fff",
+					border: "#fff",
+					selectedBackgroundColor: "#b0edd5",
+					selectedBorder: "#b0edd5",
+				},
+				current: 0,
+				current2: 0,
+				collect1: require("../static/imgs/details/collect.png"),
+				collect2: require("../static/imgs/details/collect01.png"),
+
+				tabItems: ["参数"],
+				tabCurrent: 0,
+				tabSelType: 0, //0:参数 1:价格 2:销售 3:资金流
+
+				isShow: "0",
+				detailId: null,
+				//设置默认的分享参数
+				share: {
+					title: "PAULIANA 宝莉安娜高级珠宝",
+					path: "/watch/detail?id=" + this.detailId,
+					imageUrl: "",
+					desc: "",
+					content: "",
+				},
+
+				
+			};
+		},
+		// components: {
+		// 	comment,
+		// },
+		async onLoad(option) {
+			await this.$onLaunched;
+
+			this.role = uni.getStorageSync("role");
+			this.token = uni.getStorageSync("token");
+			this.currency = getApp().globalData.userInfo.currency;
+
+			this.detailId = option.id;
+			this.getDetails(option.id);
+		},
+		onReady() {
+			this.hidePageNavInWechatBrowser();
+		},
+		onPullDownRefresh() {
+			uni.showLoading({ title: "正在刷新", });
+			this.getDetails(this.detailId);
+			uni.stopPullDownRefresh();
+		},
+		// 分享好友
+		onShareAppMessage(res) {
+			this.share.path = "/watch/details?id=" + this.detailId;
+			return {
+				title: this.share.title,
+				path: this.share.path,
+				imageUrl: this.share.imageUrl,
+				desc: this.share.desc,
+				content: this.share.content,
+				success: (res) => {
+					uni.showToast({
+						title: "分享成功",
+						icon: "none",
+					});
+				},
+				fail: (res) => {
+					uni.showToast({
+						title: "分享失败",
+						icon: "none",
+					});
+				},
+			};
+		},
+		// 分享朋友圈
+		onShareTimeline(res) {
+			this.share.path = "/watch/detail?id=" + this.detailId;
+			return {
+				title: this.share.title,
+				path: this.share.path,
+				imageUrl: this.share.imageUrl,
+				desc: this.share.desc,
+				content: this.share.content,
+				success: (res) => {
+					uni.showToast({
+						title: "分享成功",
+						icon: "none",
+					});
+				},
+				fail: (res) => {
+					uni.showToast({
+						title: "分享失败",
+						icon: "none",
+					});
+				},
+			};
+		},
+		methods: {
+			onClickTabItem(e) {
+				if (this.tabCurrent != e.currentIndex) {
+					this.tabCurrent = e.currentIndex;
+					if (this.tabItems[this.tabCurrent] == "参数") this.tabSelType = 0;
+					else if (this.tabItems[this.tabCurrent] == "价格") this.tabSelType = 1;
+					else if (this.tabItems[this.tabCurrent] == "销售") this.tabSelType = 2;
+					else if (this.tabItems[this.tabCurrent] == "资金流")
+						this.tabSelType = 3;
+					else this.tabSelType = 0;
+				}
+			},
+			// 指示点
+			swiperChange(e) {
+				this.current = e.detail.current;
+			},
+			//预览轮播图
+			imagePreview(index) {
+				//uniapp预览轮播图
+				uni.previewImage({
+					current: index, //预览图片的下标
+					urls: this.imgSrc, //预览图片的地址，必须要数组形式，如果不是数组形式就转换成数组形式就可以
+				});
+			},
+			// 获取商品详情
+			getDetails(id) {
+				uni.showLoading({
+					title: "加载中......",
+				});
+				uni.request({
+					url: this.$baseUrl + "/watch/api/watchInfo?id=" + id,
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					success: (res) => {
+						uni.hideLoading();
+						this.detail = res.data;
+
+						uni.setNavigationBarTitle({
+							title: this.detail.brand + ' - ' + this.detail.model,
+						});
+
+						this.imgSrc = [];
+						if (
+							this.detail.pics != "" &&
+							this.detail.pics != null
+						) {
+							let p = this.detail.pics.split("|");
+							for (let i = 0; i < p.length - 1; i++) {
+								if (p[i].trim().length > 0) {
+									this.imgSrc.push(this.$baseUrl + "/watch/api" + p[i].trim());
+									if (!this.detail.pic2)
+										this.detail.pic2 = this.$baseUrl + "/watch/api" + p[i].trim();
+								}
+
+							}
+						}
+
+						this.setTabItem();
+					},
+					fail: (err) => {
+						uni.hideLoading();
+						console.log(err);
+					},
+				});
+			},
+			setTabItem() {
+				this.tabItems = ["参数"];
+				if (
+					this.detail.createTime ||
+					this.detail.cost ||
+					this.detail.pricePeer ||
+					this.detail.note
+				) {
+					this.tabItems.push("价格");
+				}
+				if (
+					this.detail.soldTime ||
+					this.detail.saleTotalHkPrice ||
+					this.detail.customer
+				) {
+					this.tabItems.push("销售");
+				}
+				// if (this.detail.allPaymentList.length > 0) {
+				// 	this.tabItems.push("资金流");
+				// }
+			},
+			getTradeType(type) {
+				if (type == 0) return "買入";
+				else if (type == 1) return "賣出";
+				else if (type == 2) return "轉賬";
+				else if (type == 3) return "買入退款";
+				else if (type == 4) return "賣出退款";
+				else if (type == 5) return "其他收入";
+				else if (type == 6) return "其他支出";
+				else if (type == 7) return "-";
+			},
+			getRateDesc(item) {
+				if (item.money > 0) {
+					return (
+						"【" +
+						item.currency +
+						" " +
+						this.formatNumberRgx(item.money) +
+						" / " +
+						item.totalToHkRate +
+						"】"
+					);
+				} else {
+					return "";
+				}
+			},
+			// 返回首页
+			goIndex() {
+				uni.switchTab({
+					url: "../pages/index",
+				});
+			},
+			// 收藏
+			isCollect() {
+				if (uni.getStorageSync("token").length == 0) {
+					uni.showToast({
+						title: "请登录",
+						icon: "none",
+						success: () => {
+							uni.switchTab({
+								url: "../pages/mine",
+							});
+						},
+					});
+				} else {
+					console.log("添加与取消收藏");
+					let list = [];
+					list.push({
+						id: this.detail.id,
+						type: 2,
+					});
+					uni.request({
+						method: "POST",
+						url: this.$baseUrl + "/wechat/api/favoriteSave",
+						data: {
+							stockList: list,
+						},
+						header: {
+							token: uni.getStorageSync("token"),
+						},
+						complete: (res) => {
+							console.log("添加与取消收藏");
+							console.log(res);
+
+							if (this.checkBack(res, true) == false) return;
+							else {
+								this.getDetails(this.detail.id);
+							}
+						},
+					});
+				}
+			},
+			// 联系客服
+			serviceClick() {
+				let detail = {};
+				detail.type = "watch";
+				detail.id = this.detail.id;
+				detail.pic = this.detail.pic2;
+				detail.title = this.detail.brand;
+				detail.subTitle = this.detail.model;
+				getApp().globalData.pageInItem = detail;
+				uni.navigateTo({
+					url: "../comm/service",
+				});
+			},
+			// 添加购物车
+			addCart() {
+				if (uni.getStorageSync("token").length == 0) {
+					uni.showToast({
+						title: "请登录",
+						icon: "none",
+						success: () => {
+							uni.switchTab({
+								url: "../pages/mine",
+							});
+						},
+					});
+				} else {
+					uni.request({
+						url: this.$baseUrl + "/cart/api/shoppingCartAdd",
+						method: "POST",
+						header: {
+							"content-type": "application/json",
+							token: uni.getStorageSync("token"),
+						},
+						data: {
+							id: this.detail.id,
+							num: 1,
+							productType: 3,
+						},
+						complete: (res) => {
+							console.log("添加购物车");
+							console.log(res);
+							if (res.statusCode == 200) {
+								uni.showToast({
+									icon: "none",
+									title: "添加成功",
+								});
+							} else {
+								uni.showToast({
+									icon: "none",
+									title: res.data.status,
+								});
+							}
+						},
+					});
+				}
+			},
+			// 立即购买
+			sureOrder() {
+				if (uni.getStorageSync("token").length == 0) {
+					uni.showToast({
+						title: "请登录",
+						icon: "none",
+						success: () => {
+							uni.switchTab({
+								url: "../pages/mine",
+							});
+						},
+					});
+				} else {
+					let list = [{
+						id: this.detail.id,
+						imgSrc: this.imgSrc[0],
+						name: encodeURIComponent(this.detail.model),
+						productAmount: this.detail.price,
+						productAmountUs: this.detail.usPrice,
+						num: 1,
+						currency: "CNY",
+						productCategory: 3,
+						actualAmount: this.detail.price,
+						actualAmountUs: this.detail.usPrice,
+					}, ];
+					console.log("跳转传参");
+					console.log(JSON.stringify(list));
+					uni.navigateTo({
+						url: "../order/confirmAnOrder?productList=" +
+							encodeURIComponent(JSON.stringify(list)),
+					});
+				}
+			},
+		},
+	};
+</script>
+
+<style lang="scss" scoped>
+	.detail {
+		width: 100%;
+		// height: 100vh;
+		background-color: #f9f9f9;
+
+		.img-title {
+			padding-top: 20rpx;
+			padding-left: 40rpx;
+			padding-right: 40rpx;
+			margin-bottom: 20rpx;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			.title-left {
+				display: flex;
+				align-items: center;
+
+				.img-line {
+					width: 6rpx;
+					height: 26rpx;
+					margin-right: 10rpx;
+					background-color: #85dbd0;
+					border-radius: 60px;
+				}
+
+				text {
+					font-size: 28rpx;
+					color: #c3c3c3;
+				}
+			}
+
+			.title-right {
+				display: flex;
+				align-items: center;
+				color: #c3c3c3;
+				font-size: 28rpx;
+			}
+		}
+
+		.uni-swiper__dots-nav {
+			justify-content: flex-end;
+		}
+
+		.price{
+			display: flex;
+			//justify-content: space-between;
+			padding: 26rpx 40rpx;
+			font-size: 30rpx;
+			color: #fff;
+			background: url(../static/imgs/details/back.png) no-repeat;
+			background-size: 100% 100%;
+		}
+		
+		.name{
+			padding: 16rpx 20rpx 16rpx 40rpx;
+			background-color: #fff;
+			font-size: 30rpx;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		
+		.note{
+			padding: 16rpx 20rpx 16rpx 40rpx;
+			background-color: #fff;
+			display: flex;
+			justify-content: space-between;
+			
+			.publicPrice{
+				color: #b6bac9;
+				font-size: 20rpx;
+			}
+		}
+		
+		.product-parameter {
+			margin-top: 20rpx;
+			padding: 30rpx 40rpx;
+			padding-bottom: 200rpx;
+			background-color: #fff;
+			text-align: left;
+			min-height: 50vh;
+
+			.parameter {
+				font-size: 26rpx;
+				font-weight: bold;
+				color: #303030;
+			}
+
+			.parameter-line {
+				height: 4rpx;
+				margin-top: 30rpx;
+				background-color: #f9f9f9;
+				border-radius: 5px;
+			}
+
+			.parameter-every {
+				margin-top: 40rpx;
+				display: flex;
+				justify-content: space-between;
+				font-size: 28rpx;
+				color: #c3c3c3;
+			}
+		}
+
+		.product-comment {
+			margin-top: 20rpx;
+			padding-bottom: 160rpx;
+			background-color: #fff;
+		}
+
+		.step {
+			padding: 30rpx 30rpx 10rpx 30rpx;
+			background-color: #ffffff;
+
+			.steptitle {
+				font-size: 28rpx;
+				margin-bottom: 20rpx;
+			}
+
+			.row {
+				display: flex;
+			}
+
+			.item {
+				margin-bottom: 60rpx;
+				color: #666666;
+				align-items: flex-start;
+
+				.dot {
+					width: 20rpx;
+					height: 20rpx;
+					background-color: #85dbd0;
+					border-radius: 30rpx;
+					margin-right: 20rpx;
+					// margin-top: 10rpx;
+				}
+
+				.time {
+					//color: #C0C0C0;
+					font-size: 24rpx;
+				}
+
+				.desc {
+					font-size: 24rpx;
+					word-break: break-all;
+					word-wrap: break-word;
+				}
+
+				.note {
+					color: #c0c0c0;
+					font-size: 24rpx;
+					word-break: break-all;
+					word-wrap: break-word;
+					margin-top: 10rpx;
+				}
+			}
+
+			.line {
+				margin: 10rpx 16rpx;
+				border-left: 1rpx solid #e2ebfd;
+				height: 56rpx;
+				line-height: 56rpx;
+				padding-left: 46rpx;
+				font-size: 22rpx;
+
+				.yesName {
+					color: #b6bac9;
+				}
+
+				.noName {
+					color: #b6bac9;
+				}
+			}
+		}
+
+		.product-bottom {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			padding: 10rpx 31rpx 20rpx 31rpx;
+			display: flex;
+			justify-content: space-between;
+			background-color: #fff;
+			border-top: 1px solid #f9f9f9;
+
+			.bottom-left {
+				display: flex;
+
+				.serviceButton {
+					margin-right: 40rpx;
+					padding: 0;
+					line-height: unset;
+					border: none;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					align-items: center;
+				}
+
+				.left-index,
+				.left-collect {
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					align-items: center;
+				}
+
+				.left-index {
+					margin-right: 40rpx;
+				}
+
+				.index-img {
+					width: 34rpx;
+					height: 34rpx;
+				}
+
+				.index-font {
+					margin-top: 10rpx;
+					font-size: 20rpx;
+				}
+
+				.left-collect {
+					text-align: center;
+				}
+			}
+
+			.bottom-right {
+				display: flex;
+
+				.add-cart {
+					width: 220rpx;
+					height: 80rpx;
+					line-height: 80rpx;
+					text-align: center;
+					background-color: #f3fffd;
+					color: #6bcda5;
+					font-size: 28rpx;
+					border-top-left-radius: 60rpx;
+					border-bottom-left-radius: 60rpx;
+				}
+
+				.buy-button {
+					width: 220rpx;
+					height: 80rpx;
+					line-height: 80rpx;
+					text-align: center;
+					background: linear-gradient(to right, #6bcda5, #68decf);
+					color: #fff;
+					font-size: 28rpx;
+					border-top-right-radius: 60rpx;
+					border-bottom-right-radius: 60rpx;
+				}
+			}
+		}
+	}
+</style>

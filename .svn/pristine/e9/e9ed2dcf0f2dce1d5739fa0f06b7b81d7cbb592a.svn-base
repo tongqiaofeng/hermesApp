@@ -1,0 +1,128 @@
+{
+  "pages": [
+    "pages/index",
+    "pages/list",
+    "pages/classify",
+    "pages/cart",
+    "pages/mine",
+    "comm/search",
+    "comm/login",
+    "comm/service",
+    "comm/openWechat",
+    "comm/QRCode"
+  ],
+  "subPackages": [
+    {
+      "root": "jewelry",
+      "pages": [
+        "jewelryFinished",
+        "jewelryMaterial",
+        "saleReport",
+        "jewelryDetails",
+        "materialDetails"
+      ]
+    },
+    {
+      "root": "my",
+      "pages": [
+        "collectGoods",
+        "footprint",
+        "password",
+        "updateMyMsg",
+        "updatePhone",
+        "integral"
+      ]
+    },
+    {
+      "root": "hermes",
+      "pages": [
+        "hermesReport",
+        "hermesSellBar",
+        "profitReport",
+        "sellVolumeReport",
+        "stockReport",
+        "stockList",
+        "billSummary",
+        "billDetail",
+        "details",
+        "inventory"
+      ]
+    },
+    {
+      "root": "order",
+      "pages": [
+        "confirmAnOrder",
+        "orderList",
+        "orderDetail",
+        "orderPayType",
+        "returnOrder",
+        "returnOrderDetail",
+        "returnType",
+        "priceAndProduct",
+        "logistics",
+        "addr/addressAdmin",
+        "addr/addressUpdate",
+        "addr/addressAdd"
+      ]
+    },
+    {
+      "root": "watch",
+      "pages": [
+        "detail"
+      ]
+    },
+    {
+      "root": "chat",
+      "pages": [
+        "chat"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#f9f9f9",
+    "backgroundColor": "#f9f9f9"
+  },
+  "tabBar": {
+    "color": "#c3c3c3",
+    "selectedColor": "#85dbd0",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index",
+        "text": "首页",
+        "iconPath": "static/imgs/tabBar/index.png",
+        "selectedIconPath": "static/imgs/tabBar/index01.png"
+      },
+      {
+        "pagePath": "pages/classify",
+        "text": "分类",
+        "iconPath": "static/imgs/tabBar/classify.png",
+        "selectedIconPath": "static/imgs/tabBar/classify01.png"
+      },
+      {
+        "pagePath": "pages/list",
+        "text": "消息",
+        "iconPath": "static/imgs/tabBar/message.png",
+        "selectedIconPath": "static/imgs/tabBar/message01.png"
+      },
+      {
+        "pagePath": "pages/cart",
+        "text": "购物车",
+        "iconPath": "static/imgs/tabBar/cart.png",
+        "selectedIconPath": "static/imgs/tabBar/cart01.png"
+      },
+      {
+        "pagePath": "pages/mine",
+        "text": "我的",
+        "iconPath": "static/imgs/tabBar/mine.png",
+        "selectedIconPath": "static/imgs/tabBar/mine01.png"
+      }
+    ]
+  },
+  "permission": {},
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
+}

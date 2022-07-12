@@ -1,0 +1,105 @@
+
+.uqrcode {
+  position: relative;
+}
+.uqrcode-makeing {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  display: flex;
+  box-sizing: border-box;
+
+  justify-content: center;
+  align-items: center;
+  background-color: #FFFFFF;
+  transition-property: opacity;
+  transition-duration: 0.25s;
+  opacity: 0.88;
+}
+.uqrcode-make-complete {
+  opacity: 0;
+}
+.uqrcode-view {
+
+  display: flex;
+  box-sizing: border-box;
+
+  flex-direction: column;
+}
+.uqrcode-view-row {
+
+  display: flex;
+  box-sizing: border-box;
+
+  flex-direction: row;
+}
+.uqrcode-view-col {
+
+  display: flex;
+  box-sizing: border-box;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

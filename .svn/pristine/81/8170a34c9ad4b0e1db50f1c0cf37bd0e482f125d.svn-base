@@ -1,0 +1,238 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+page {
+  height: 100%;
+  display: flex;
+  background-color: #f9f9f9;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+}
+.content .nav {
+  background-color: #f9f9f9;
+  position: fixed;
+  z-index: 99;
+  width: 100%;
+  align-items: center;
+  height: 100rpx;
+}
+.content .nav .tab-scroll {
+  flex: 1;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.content .nav .tab-scroll .tab-scroll_box {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+}
+.content .nav .tab-scroll .tab-scroll_box .tab-scroll_item {
+  flex-shrink: 0;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  font-size: 28rpx;
+  padding-top: 10px;
+}
+.content .swiper-content {
+  flex: 1;
+}
+.active {
+  position: relative;
+  color: #85dbd0;
+  font-weight: 600;
+  border-bottom: 4rpx solid #85dbd0;
+}
+/* 隐藏滚动条，但依旧具备可以滚动的功能 */
+ .uni-scroll-view::-webkit-scrollbar {
+  display: none;
+}
+.order-list {
+  position: absolute;
+  top: 74rpx;
+  left: 20rpx;
+  right: 20rpx;
+  background-color: #f9f9f9;
+  z-index: 0;
+}
+.order-list .list-every {
+  margin-top: 20rpx;
+  border-radius: 20rpx;
+  background-color: #fff;
+}
+.order-list .list-every .every-top {
+  padding: 30rpx 20rpx 20rpx;
+  display: flex;
+  justify-content: space-between;
+}
+.order-list .list-every .every-top .top-left {
+  color: #000;
+  font-size: 30rpx;
+}
+.order-list .list-every .every-top .top-right {
+  color: #FE7722;
+  font-size: 30rpx;
+}
+.order-list .list-every .every-main {
+  background-color: #fff;
+}
+.order-list .list-every .every-main .main-msg {
+  margin-top: 4rpx;
+  padding: 20rpx 20rpx 0 0;
+}
+.order-list .list-every .every-main .main-msg .msg-container {
+  display: flex;
+}
+.order-list .list-every .every-main .main-msg .msg-container .msg-img {
+  margin: 0 20rpx;
+}
+.order-list .list-every .every-main .main-msg .msg-container .msg-img image {
+  width: 136rpx;
+  height: 136rpx;
+  border-radius: 20rpx;
+}
+.order-list .list-every .every-main .main-msg .msg-container .msg-data {
+  flex: 1;
+  font-size: 24rpx;
+}
+.order-list .list-every .every-main .main-msg .msg-container .msg-data .data-name {
+  width: 65vw;
+  padding-top: 5rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.order-list .list-every .every-main .main-msg .msg-container .msg-data .data-num {
+  font-size: 20rpx;
+  margin: 20rpx 0;
+  color: #c3c3c3;
+}
+.order-list .list-every .every-main .main-msg .msg-container .msg-data .data-price {
+  margin-top: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 26rpx;
+  font-weight: bold;
+}
+.order-list .list-every .every-main .main-msg .main-money {
+  margin-top: 30rpx;
+  text-align: right;
+}
+.order-list .list-every .every-main .main-msg .main-money .money-title {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #000;
+}
+.order-list .list-every .every-main .main-msg .main-money .money {
+  color: #FF7824;
+  font-size: 30rpx;
+  font-weight: bold;
+}
+.order-list .list-every .every-main .main-button {
+  padding-bottom: 20rpx;
+  margin-top: 40rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+.order-list .list-every .every-main .main-button .button-cancel,
+.order-list .list-every .every-main .main-button .button-pay {
+  padding: 15rpx 30rpx;
+  border-radius: 60rpx;
+  font-size: 24rpx;
+}
+.order-list .list-every .every-main .main-button .button-cancel {
+  background-color: #f6f6f6;
+}
+.order-list .list-every .every-main .main-button .button-pay {
+  margin-left: 20rpx;
+  background-color: #85dbd0;
+  color: #fff;
+}
+.order-list .list-every .every-bottom {
+  padding: 20rpx 40rpx;
+  margin-top: 4rpx;
+  text-align: right;
+  font-size: 22rpx;
+  background-color: #fff;
+}
+.order-list .list-every .every-bottom .bottom-title {
+  color: #c3c3c3;
+}
+.order-list .list-every .every-bottom .bottom-price {
+  color: #000;
+}
+.order-list .is-haveMore {
+  padding-top: 40rpx;
+  padding-bottom: 140rpx;
+  font-size: 24rpx;
+  color: #e3e3e3;
+  text-align: center;
+  font-size: 30rpx;
+}
+.popup-container {
+  height: 664rpx;
+  margin: 0 auto;
+  padding: 0 30rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  text-align: center;
+  background-color: #fff;
+  border-top-left-radius: 20rpx;
+  border-top-right-radius: 20rpx;
+}
+.popup-container .popup-title {
+  margin-bottom: 90rpx;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+.popup-container .popup-title .currency {
+  margin-right: 10rpx;
+  font-size: 24rpx;
+}
+.popup-container .popup-title .price {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+.popup-container .button-sure {
+  padding: 28rpx 0;
+  background-color: #85dbd0;
+  border-radius: 60rpx;
+  color: #fff;
+  font-size: 30rpx;
+}
+

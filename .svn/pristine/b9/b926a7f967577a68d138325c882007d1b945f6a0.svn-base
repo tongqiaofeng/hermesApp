@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "商品搜索",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "easy-loadimage": "/components/easy-loadimage/easy-loadimage"
+  }
+}

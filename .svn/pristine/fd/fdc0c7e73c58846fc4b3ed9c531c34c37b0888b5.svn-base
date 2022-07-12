@@ -1,0 +1,572 @@
+<template>
+	<view>
+		<!-- <view class="">{{flushCnt}}</view> -->
+
+		<scroll-view scroll-y="true" class="msgLst" :style="{ height: scrollHeight + 'px' }"
+			:scroll-into-view="scrollIntoView" scroll-with-animation="true">
+			<view v-if="loadMore && msgList.length > 0" class="loadMore" @click="loadMoreMsg()">
+				查看更多消息
+			</view>
+
+			<view class="item" v-for="(msg, index) in msgList" :key="index" :id="'msg_' + index">
+				<view style="margin-bottom: 20rpx; font-size: 28rpx">
+					<!-- 时间显示 -->
+					<view v-if="msg.showTime" class="time">
+						{{ msg.showTime }}
+					</view>
+
+					<!-- 消息 -->
+					<view v-if="isSelf(msg.sender)" style="display: flex">
+						<view style="flex: 1"></view>
+						<text @longpress="copyItem(msg.contentText)" v-if="msg.contentType == 0" class="msg" style="background-color: #85dbd0">
+							<text v-for="(src, index2) in msg.contentTexts" :key="index2">
+								<uni-link v-if="src.isUrl" :href="src.url" :text="src.text" color="#0D1171"></uni-link>
+								<text v-else>{{src.text}}</text>
+							</text>
+						</text>
+						<image v-else-if="msg.contentType == 1" class="msgPic" :src="msg.contentPic" mode="widthFix" @click="previewImage(msg.contentPic)"></image>
+						<view v-else-if="msg.contentType == 11" class="detail"  @click="gotoDetail(msg.contentText.type, msg.contentText.id)">
+							<view style="display: flex;">
+								<image :src="msg.contentText.pic" mode="aspectFill" class="img"></image>
+								<view style="display: flex; flex-direction: column;justify-content: space-around;">
+									<view class="text">{{msg.contentText.title}}</view>
+									<view class="text">{{msg.contentText.subTitle}}</view>
+								</view>
+							</view>
+						</view>
+						<!-- <image v-if="msg.contentType == 0" src="../static/imgs/chat/r.png" mode="aspectFill" style="width: 30rpx; height: 30rpx; margin-left: -8rpx; margin-top: 20rpx;"></image> -->
+						<image class="head" style="margin-left: 20rpx" :src="getUserHead(msg.sender)" mode="aspectFill"></image>
+
+						<!-- <view v-if="msg.readStatus == -1">发送中</view> -->
+						<!-- <view @click="chat_deleteMsgCmd(msg.receiver, msg.id)">撤销</view> -->
+					</view>
+					<view v-else style="display: flex">
+						<image class="head" :src="getUserHead(msg.sender)" mode="aspectFill"></image>
+						<!-- <image v-if="msg.contentType == 0" src="../static/imgs/chat/l.png" mode="aspectFill" style="width: 30rpx; height: 30rpx; margin-right: -8rpx; margin-top: 20rpx;"></image> -->
+						<text @longpress="copyItem(msg.contentText)" v-if="msg.contentType == 0" class="msg">
+							<text v-for="(src, index3) in msg.contentTexts" :key="index3"> 
+								<uni-link v-if="src.isUrl" :href="src.url" :text="src.text" color="#0D1171"></uni-link>
+								<text v-else>{{src.text}}</text>
+							</text>
+						</text>
+						<image v-else-if="msg.contentType == 1" class="msgPic" :src="msg.contentPic" mode="widthFix" @click="previewImage(msg.contentPic)"></image>
+						<view v-else-if="msg.contentType == 11" class="detail"  @click="gotoDetail(msg.contentText.type, msg.contentText.id)">
+							<view style="display: flex;">
+								<image :src="msg.contentText.pic" mode="aspectFill" class="img"></image>
+								<view style="display: flex; flex-direction: column;justify-content: space-around;">
+									<view class="text">{{msg.contentText.title}}</view>
+									<view class="text">{{msg.contentText.subTitle}}</view>
+								</view>
+							</view>
+						</view>
+						<!-- <view v-if="msg.readStatus == -1">发送中</view> -->
+					</view>
+
+				</view>
+			</view>
+			
+			<view v-if="detail" style="display: flex; flex-direction: column; align-items: center;">
+				<view class="detail" @click="gotoDetail(detail.type, detail.id)">
+					<view style="display: flex;border-bottom: 1rpx solid #cccccc;padding-bottom: 15rpx;">
+						<image :src="detail.pic" mode="aspectFill" class="img"></image>
+						<view style="display: flex; flex-direction: column;justify-content: space-around;">
+							<view class="text">{{detail.title}}</view>
+							<view class="text">{{detail.subTitle}}</view>
+						</view>
+					</view>
+					<view class="button" @click="sendDetail">发送链接</view>
+				</view>
+			</view>
+
+			<view style="height: 20rpx"></view>
+		</scroll-view>
+
+		<view class="send">
+			<textarea class="sendText" type="text" value="" v-model="content" @click="changeMode(0)" />
+			<button v-if="content.length > 0" class="sendBtn" type="default" @click="sendMsg(content, 0)">
+				发送
+			</button>
+			<image v-else class="sendBtn2" src="../static/imgs/chat/add.png" mode="aspectFill" @click="changeMode()">
+			</image>
+		</view>
+
+		<view v-if="mode == 1" class="picMode">
+			<view class="" @click="actionMode(0)">
+				<image class="btnPic" src="../static/imgs/chat/pic.png" mode="aspectFill"></image>
+				<view class="btnTxt">相册</view>
+			</view>
+			<view class="" @click="actionMode(1)">
+				<image class="btnPic" src="../static/imgs/chat/video.png" mode="aspectFill"></image>
+				<view class="btnTxt">拍摄</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import $T from "@/static/js/time.js";
+	export default {
+		data() {
+			return {
+				baseFileUrl: this.$baseFileUrl,
+				userId: "",
+				content: "",
+				flushCnt: 0,
+				msgList: [],
+				serviceMsgId: -1,
+				scrollHeight: 100,
+				scrollIntoView: "",
+				mode: 0,
+				loadMore: true,
+				
+				detail:null,
+			};
+		},
+		async onLoad(e) {
+			
+			await this.$onLaunched;
+			
+			this.userId = e.id;
+			
+
+			if (e.name) {
+				uni.setNavigationBarTitle({
+					title: e.name,
+				});
+			}
+
+			uni.$on("user-msg-update", (data) => {
+				this.flushData();
+				//alert('user-msg-update');
+			});
+			
+			
+			getApp().globalData.g_chat.setCurChatUserId(this.userId);
+			getApp().globalData.g_chat.updateUserMsg(this.userId);
+			
+			if(getApp().globalData.pageInItem){
+				this.detail = getApp().globalData.pageInItem;
+				getApp().globalData.pageInItem = '';
+			}
+		},
+		onShow() {
+			if (getApp().globalData.g_chat){
+				getApp().globalData.g_chat.updateUserMsg(this.userId);
+			}
+		},
+		onReady() {
+			this.hidePageNavInWechatBrowser();
+			this.calcHeight();
+		},
+		methods: {
+			sendMsg(txt, type) {
+				if (getApp().globalData.g_chat) {
+					getApp().globalData.g_chat.sendMsgToUserCmd(this.userId, txt, type);
+					this.content = "";
+					this.changeMode(0);
+					this.detail = '';
+				}
+			},
+			sendDetail(){
+				if(this.detail){
+					if (getApp().globalData.g_chat) {
+						getApp().globalData.g_chat.sendMsgToUserCmd(this.userId, JSON.stringify(this.detail), 11);
+						this.detail = '';
+					}
+				}
+			},
+			flushData() {
+				if (!getApp().globalData.g_chat)
+					return;
+				let userIdx = getApp().globalData.g_chat.findUser(this.userId);
+				if (userIdx > -1) {
+					let oldStartMsgId = 0;
+					let oldEndMsgId = 0;
+					if (this.msgList.length > 0) {
+						oldStartMsgId = this.msgList[0].id;
+						oldEndMsgId = this.msgList[this.msgList.length - 1].id;
+					}
+					this.msgList = [];
+					this.msgPicList = [];
+					let temp = {};
+					let userList = getApp().globalData.g_chat.getUserList();
+					for ( let i = 0; i < userList[userIdx].msgList.length; ++i ) {
+						temp = this.deepClone(userList[userIdx].msgList[i]);
+						
+						if (temp.contentType == 1) {
+							//处理图片
+							temp.contentPic = this.baseFileUrl + "/file/" + temp.contentText;
+							this.msgPicList.push(temp.contentPic);
+						}
+						else if(temp.contentType == 11){
+							//处理商品详情信息
+							temp.contentText = JSON.parse(temp.contentText);
+						}
+						else{
+							//处理消息中的url
+							temp.contentTexts = this.getHref(temp.contentText);
+						}
+
+						this.msgList.push(temp);
+						//处理时间
+						this.msgList[i].showTime = this.getMsgTime(i);
+					}
+	
+
+					if (this.msgList.length > 0) {
+						let newStartMsgId = this.msgList[0].id;
+						let newEndMsgId = this.msgList[this.msgList.length - 1].id;
+
+						if (oldEndMsgId != newEndMsgId) this.scrollToMsg();
+
+						if (this.msgList[0].isLastHistory) this.loadMore = false;
+						else this.loadMore = true;
+					} else {
+						this.loadMore = false;
+					}
+				}
+
+				this.flushCnt++;
+			},
+			getMsgTime(idx) {
+				let time1 = 0;
+				let time2 = $T.ISO8601DateStr2Date(this.msgList[idx].time);
+				if (idx > 0) {
+					time1 = $T.ISO8601DateStr2Date(this.msgList[idx - 1].time);
+				}
+				let ret = $T.getChatTime(time2, time1);
+				return ret;
+			},
+			scrollToMsg() {
+				setTimeout(() => {
+					this.scrollIntoView = "msg_" + (this.msgList.length - 1);
+				}, 200);
+			},
+			loadMoreMsg() {
+				if (getApp().globalData.g_chat)
+					getApp().globalData.g_chat.getMsgHistoryCmd(this.userId, true);
+			},
+			calcHeight() {
+				let that = this;
+				uni.getSystemInfo({
+					success(res) {
+						let windownHeight = res.windowHeight; //windoHeight为窗口高度，主要使用的是这个
+						let svTop = 0;
+						let sv = uni.createSelectorQuery().select(".msgLst"); //想要获取高度的元素名（class/id）
+						sv.boundingClientRect((data) => {
+							svTop = data.top; //计算高度：元素高度=窗口高度-元素距离顶部的距离（data.top）
+						}).exec();
+
+						let send = uni.createSelectorQuery().select(".send"); //想要获取高度的元素名（class/id）
+						send
+							.boundingClientRect((data) => {
+								that.scrollHeight = windownHeight - svTop - data.height;
+							})
+							.exec();
+
+						console.log(that.scrollHeight);
+					},
+				});
+			},
+			isSelf(sender) {
+				return getApp().globalData.g_chat.isSelf(sender);
+			},
+			getUserHead(userId) {
+				let headPic = "";
+				if (getApp().globalData.g_chat.isSelf(userId)) {
+					headPic = getApp().globalData.userInfo.userHeadPic;
+				} else {
+					let userList = getApp().globalData.g_chat.getUserList();
+					for (let i = 0; i < userList.length; ++i) {
+						if (userList[i].userId == userId) {
+							headPic = userList[i].head_pic;
+							break;
+						}
+					}
+				}
+
+				if (headPic) return this.$baseFileUrl + "/file/" + headPic;
+				else return "http://bzbb.com/other/img/toptimeclub.png";
+			},
+			changeMode(mode) {
+				if (mode == 0) {
+					if (this.mode == 1) {
+						this.mode = 0;
+						this.scrollHeight += uni.upx2px(300);
+					}
+				} else if (this.mode == 0) {
+					this.mode = 1;
+					this.scrollHeight -= uni.upx2px(300);
+				} else {
+					this.mode = 0;
+					this.scrollHeight += uni.upx2px(300);
+				}
+			},
+			actionMode(type) {
+				if (type == 0) {
+					//图片
+					uni.chooseImage({
+						count: 9,
+						sourceType: ["album"], //从相册选择
+						success: (res) => {
+							console.log("图片选择成功", res);
+							this.sendpic(res);
+						},
+					});
+				} else if (type == 1) {
+					//拍摄
+					uni.chooseImage({
+						count: 9,
+						sourceType: ["camera"], //从选择
+						success: (res) => {
+							this.sendpic(res);
+						},
+					});
+				}
+			},
+			// 发送图片
+			sendpic(res) {
+				const tempFilePaths = res.tempFilePaths;
+				let promiseWorkList = [];
+				for (let i = 0; i < tempFilePaths.length; i++) {
+					promiseWorkList.push(
+						new Promise((resolve, reject) => {
+							console.log("上传项", tempFilePaths[i]);
+							uni.uploadFile({
+								url: this.$baseFileUrl + "/upload",
+								fileType: "image",
+								filePath: tempFilePaths[i],
+								name: "upload-images",
+								success: (res) => {
+									console.log("上传成功", res);
+									if (res.statusCode === 200) {
+										console.log("图片信息", res.data);
+										let pic = res.data.split("|")[0];
+										this.sendMsg(pic, 1);
+									} else {
+										console.log()("failt to upload image:", res);
+										uni.showToast({
+											title: "图片上传失败",
+											icon: "none",
+											duration: 2000,
+										});
+									}
+								},
+								fail: (res) => {
+									console.log("failt to upload image:", res);
+									uni.showToast({
+										title: "网络连接失败",
+										icon: "none",
+										duration: 2000,
+									});
+								},
+							});
+						})
+					);
+				}
+			},
+			// 预览图片
+			previewImage(url) {
+				uni.previewImage({
+					current: url,
+					urls: this.msgPicList,
+					indicator: "default",
+				});
+			},
+			copyItem(src){
+				uni.setClipboardData({
+					data: src, //要被复制的内容
+					success: () => {
+						//复制成功的回调函数
+						uni.showToast({
+							//提示
+							title: "复制成功",
+							icon: "none",
+						});
+					},
+				});
+			},
+			getHref(content) {
+				if (!content) {
+					return [];
+				}
+				let urlPattern = /(https?:\/\/|www\.)[a-zA-Z_0-9\-@]+(\.\w[a-zA-Z_0-9\-:]+)+(\/[\(\)~#&\-=?\+\%/\.\w]+)?/g;
+				content = content.replace(urlPattern, function(match) {
+					
+					return "b6b675fZ-fc22-4947-b0e2-887adX93d23e" + "" + match + "b6b675fZ-fc22-4947-b0e2-887adX93d23e";
+				});
+				content = content.split("b6b675fZ-fc22-4947-b0e2-887adX93d23e");
+				let ret = [];
+				for(let i = 0; i < content.length; ++i){
+					if(content[i].length > 0){
+						if(content[i].search(urlPattern) == -1){
+							ret.push({isUrl: false, text: content[i]});
+						}
+						else{
+							let url = content[i];
+							if (url.indexOf("http") == -1) url = "http://" + url;
+							ret.push({isUrl: true, text: content[i], url:url});
+						}
+					}
+				}
+				return ret;
+			},
+			gotoDetail(type, id){
+				if (type == "jewelry") {
+					uni.navigateTo({
+						url: "../jewelry/jewelryDetails?id=" + id,
+					});
+				} else if (type == "hermes") {
+					uni.navigateTo({
+						url: "../hermes/details?id=" + id,
+					});
+				} else if (type == "watch") {
+					uni.navigateTo({
+						url: "../watch/detail?id=" + id,
+					});
+				}
+			}
+		},
+	};
+</script>
+
+<style lang="scss" scoped>
+	.msgLst {
+		background-color: #ededed;
+
+		.loadMore {
+			text-align: center;
+			font-size: 28rpx;
+			color: #444444;
+			margin: 20rpx;
+		}
+
+		.item {
+			margin: 20rpx;
+			font-size: 28rpx;
+
+			.head {
+				width: 80rpx;
+				height: 80rpx;
+				border-radius: 80rpx;
+				margin-right: 20rpx;
+			}
+
+			.time {
+				text-align: center;
+				font-size: 26rpx;
+				color: #888888;
+				padding: 20rpx;
+			}
+
+			.msg {
+				max-width: 450rpx;
+				word-wrap: break-word;
+				background-color: #ffffff;
+				border-radius: 10rpx;
+				padding: 20rpx;
+			}
+
+			.msgPic {
+				max-width: 250rpx;
+				background-color: #ffffff;
+				border-radius: 10rpx;
+				border: 1rpx solid #cccccc;
+			}
+
+			.tip {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				margin-top: 60rpx;
+				margin-bottom: 40rpx;
+			}
+		}
+		
+		.detail{
+			background-color: #ffffff;
+			padding: 15rpx;
+			border-radius: 10rpx;
+			width: 500rpx;
+			font-size: 28rpx;
+			display: flex; 
+			flex-direction: column; 
+			align-items: center;
+			
+			.img{
+				width: 100rpx;
+				height: 100rpx;
+				margin-right: 20rpx;
+			}
+			
+			.text{
+				width: 380rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			
+			.button{
+				background-color: #85dbd0;
+				line-height: 70rpx;
+				width: 200rpx;
+				border-radius: 10rpx;
+				color: #ffffff;
+				text-align: center;
+				margin-top: 15rpx;
+				
+			}
+		}
+	}
+
+	.send {
+		background-color: #f7f7f7;
+		padding: 20rpx;
+		display: flex;
+		align-items: center;
+
+		.sendText {
+			height: 80rpx;
+			line-height: 80rpx;
+			padding: 0rpx 20rpx;
+			font-size: 32rpx;
+			flex: 1;
+			border-radius: 10rpx;
+			background-color: #ffffff;
+			margin-right: 20rpx;
+		}
+
+		.sendBtn {
+			font-size: 30rpx;
+			height: 80rpx;
+			line-height: 80rpx;
+			background-color: #85dbd0;
+			color: #ffffff;
+		}
+
+		.sendBtn2 {
+			width: 50rpx;
+			height: 50rpx;
+		}
+	}
+
+	.picMode {
+		height: 300rpx;
+		padding: 40rpx 80rpx;
+		background-color: #f7f7f7;
+		border-top: 1rpx solid #e3e3e3;
+		display: flex;
+
+		.btnPic {
+			width: 100rpx;
+			height: 100rpx;
+			margin-right: 80rpx;
+		}
+
+		.btnTxt {
+			font-size: 26rpx;
+			width: 100rpx;
+			text-align: center;
+		}
+	}
+</style>

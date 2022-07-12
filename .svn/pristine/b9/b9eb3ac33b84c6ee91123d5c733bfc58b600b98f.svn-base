@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "PAULIANA 宝莉安娜高级珠宝",
+  "navigationBarTextStyle": "white",
+  "navigationBarBackgroundColor": "#85dbd0",
+  "enablePullDownRefresh": true,
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "easy-loadimage": "/components/easy-loadimage/easy-loadimage",
+    "uni-transition": "/uni_modules/uni-transition/components/uni-transition/uni-transition"
+  }
+}

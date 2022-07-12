@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "支付方式",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#f9f9f9",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-popup": "/uni_modules/uni-popup/components/uni-popup/uni-popup"
+  }
+}

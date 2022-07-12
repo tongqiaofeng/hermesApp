@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "产品二维码",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uqrcode": "/uni_modules/Sansnn-uQRCode/components/uqrcode/uqrcode"
+  }
+}

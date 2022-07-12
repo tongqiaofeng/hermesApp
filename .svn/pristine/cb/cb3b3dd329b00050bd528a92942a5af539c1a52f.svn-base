@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "销量排行",
+  "navigationBarTextStyle": "white",
+  "navigationBarBackgroundColor": "#85dbd0",
+  "enablePullDownRefresh": true,
+  "usingComponents": {}
+}
