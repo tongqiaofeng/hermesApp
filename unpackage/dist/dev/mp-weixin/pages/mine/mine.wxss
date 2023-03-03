@@ -63,7 +63,7 @@
   color: #ffffff;
 }
 .mine-container .mine-main.data-v-dcbcfe34 {
-  padding: 20rpx 40rpx 20rpx;
+  padding: 30rpx 40rpx;
   background-color: #f9f9f9;
 }
 .mine-container .mine-main .main-top.data-v-dcbcfe34 {

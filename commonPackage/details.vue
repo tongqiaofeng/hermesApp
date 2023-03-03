@@ -178,16 +178,16 @@
 					<view class="index-font">{{bagDetails.myFavorite == 0 ? '收藏' : '已收藏'}}</view>
 				</view>
 			</view>
-			<view class="bottom-right" @click="serviveClick">
+			<!-- <view class="bottom-right" @click="serviveClick">
 				<image src="../static/imgs/details/service.png" mode="aspectFill"></image>
-			</view>
+			</view> -->
 			<!-- #ifdef MP-WEIXIN -->
-			<!-- <view class="buy">
+			<view class="buy">
 				<view class="buy-button" @click="addCart">加入购物车</view>
 			</view>
 			<view class="buy">
 				<view class="buy-button" @click="sureOrder">立即购买</view>
-			</view> -->
+			</view>
 			<!-- #endif -->
 		</view>
 	</view>
@@ -441,14 +441,14 @@
 						id: this.bagDetails.id,
 						imgSrc: this.imgSrc[0],
 						name: encodeURIComponent(this.bagDetails.name),
-						price: this.bagDetails.hkdPriceIndi,
+						price: 1000,
 						num: this.buyAmount,
 						currency: 'HKD'
 					}];
 					console.log('跳转传参')
 					console.log(JSON.stringify(list));
 					uni.navigateTo({
-						url: "../package/confirmAnOrder?productList=" + JSON.stringify(list)
+						url: "../package/confirmAnOrder?productList=" + encodeURIComponent(JSON.stringify(list))
 					})
 				}
 			},

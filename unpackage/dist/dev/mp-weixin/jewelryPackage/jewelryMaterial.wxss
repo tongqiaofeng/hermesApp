@@ -41,6 +41,21 @@
 .content .inventory-top .item.data-v-c10e0ba8 {
   padding: 0 30rpx;
 }
+.content .inventory-top .mine-title.data-v-c10e0ba8 {
+  height: 44px;
+  padding: 0 40rpx;
+  display: flex;
+  align-items: center;
+}
+.content .inventory-top .mine-title .search-input.data-v-c10e0ba8 {
+  width: 400rpx;
+  padding: 10rpx 20rpx;
+  margin-left: 20rpx;
+  background-color: #f6f6f6;
+  border-radius: 30px;
+  text-align: center;
+  font-size: 24rpx;
+}
 .content .inventory-top .inputs.data-v-c10e0ba8 {
   margin-top: 40rpx;
 }
@@ -82,6 +97,7 @@
 }
 .content .material-filter .filter-every .every-main.data-v-c10e0ba8 {
   display: flex;
+  align-items: center;
 }
 .content .material-filter .filter-every .every-font.data-v-c10e0ba8 {
   font-size: 26rpx;
@@ -94,25 +110,19 @@
   width: 26rpx;
   height: 6rpx;
   margin: 0 auto;
-  margin-top: 20rpx;
+  margin-top: 10rpx;
   background-color: #85dbd0;
   border-radius: 60px;
   text-align: center;
 }
 .content .inventory-main.data-v-c10e0ba8 {
   margin-top: 30rpx;
-  padding: 520rpx 30rpx 30rpx;
+  padding: 540rpx 30rpx 30rpx;
 }
 .content .inventory-main .inventory-num.data-v-c10e0ba8 {
   margin-bottom: 20rpx;
   font-size: 22rpx;
   color: #aaa;
-}
-.content .inventory-main .plantList .product-number.data-v-c10e0ba8 {
-  overflow: hidden;
-  word-break: keep-all;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 .content .inventory-main .plantList .plant.data-v-c10e0ba8 {
   margin-bottom: 30rpx;
@@ -122,12 +132,7 @@
   background-color: #ffffff;
   font-size: 26rpx;
 }
-.content .inventory-main .plantList .plant .item .every-name.data-v-c10e0ba8 {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-.content .inventory-main .plantList .plant .item .every-name .bh.data-v-c10e0ba8 {
+.content .inventory-main .plantList .plant .item .bh.data-v-c10e0ba8 {
   width: 350rpx;
   flex: 1;
   overflow: hidden;
@@ -135,7 +140,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 28rpx;
-  font-weight: bold;
   color: #000;
 }
 .content .inventory-main .plantList .plant .item .row.data-v-c10e0ba8 {
@@ -148,6 +152,14 @@
   height: 168rpx;
   margin-right: 20rpx;
   border-radius: 30rpx;
+}
+.content .inventory-main .plantList .plant .item .row .product-number.data-v-c10e0ba8 {
+  color: #999999;
+  overflow: hidden;
+  word-break: keep-all;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 450rpx;
 }
 .content .inventory-main .plantList .plant .item .row .cs.data-v-c10e0ba8 {
   font-size: 22rpx;

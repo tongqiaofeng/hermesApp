@@ -1,9 +1,9 @@
 (global["webpackJsonp"] = global["webpackJsonp"] || []).push([["minePackage/common/vendor"],{
 
 /***/ 203:
-/*!*******************************************************************!*\
-  !*** G:/aa-tong/my-project/hermesApp/static/imgs/mine/avatar.png ***!
-  \*******************************************************************/
+/*!***************************************************************************!*\
+  !*** G:/aa-tong/my-project/hermesApp_Web_Pay/static/imgs/mine/avatar.png ***!
+  \***************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 

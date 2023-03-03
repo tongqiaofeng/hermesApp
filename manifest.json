@@ -45,7 +45,13 @@
             /* ios打包配置 */
             "sdkConfigs" : {
                 "ad" : {},
-                "payment" : {}
+                "payment" : {
+                    "weixin" : {
+                        "__platform__" : [ "android" ],
+                        "appid" : "wxd7cb2e8575630361",
+                        "UniversalLinks" : ""
+                    }
+                }
             },
             "splashscreen" : {
                 "androidStyle" : "common"
@@ -89,10 +95,10 @@
     /* 快应用特有相关 */
     "mp-weixin" : {
         /* 小程序特有相关 */
-        "appid" : "wxd668456e7c9c5920",
+        "appid" : "wxd7cb2e8575630361",
         "setting" : {
             "urlCheck" : false,
-            "postcss" : false,
+            "postcss" : true,
             "minified" : false,
             "es6" : false
         },

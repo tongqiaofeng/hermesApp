@@ -47,7 +47,7 @@
 			</view>
 		</view>
 		<view class="confirm-order-container-total">
-			<text class="total-num">共{{selList.length}}件</text>
+			<text class="total-num">共{{num}}件</text>
 			<view class="total-price">
 				<text>合计：</text>
 				<text style="font-size: 22rpx;color: #ff8b62;">{{'HKD'}}<text
@@ -74,23 +74,27 @@
 				cnyTotalPrice: 0,
 				address: JSON.parse(uni.getStorageSync('userAddress')),
 				selList: [],
-				verification: {}
+				verification: {},
+				num: 0
 			}
 		},
 		onShow() {
+			console.log(this.selList);
 			console.log('地址')
 			console.log(JSON.parse(uni.getStorageSync('userAddress')))
 			this.address = JSON.parse(uni.getStorageSync('userAddress'));
 		},
 		onLoad(option) {
 			console.log('传参')
-			console.log(option.productList);
+			console.log(option);
 			if (option.productList) {
-				this.selList = JSON.parse(option.productList);
-			}
+				this.selList = JSON.parse(decodeURIComponent(option.productList));
+				console.log(this.selList);
+				this.num = this.selList.length;
 
-			for (let item of this.selList) {
-				this.totalPrice += Number(item.price);
+				for (let item of this.selList) {
+					this.totalPrice += Number(item.price);
+				}
 			}
 		},
 		methods: {
@@ -141,7 +145,18 @@
 				})
 			},
 			pay() {
+				let provider = '';
+				uni.getProvider({
+					service: "payment",
+					success: (res) => {
+						console.log('999999----------');
+						console.log(res)
+						provider = res.provider;
+					}
+				});
+
 				uni.requestPayment({
+					provider: provider,
 					timeStamp: this.verification.payMsg.timeStamp.toString(),
 					nonceStr: this.verification.payMsg.nonceStr,
 					package: this.verification.payMsg.package,

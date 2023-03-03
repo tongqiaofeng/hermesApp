@@ -28,15 +28,15 @@
 			<text style="font-size: 30rpx">暂无数据~</text>
 		</view>
 		<view v-else class="index-main">
-			<view class="main-every" v-for="(item, index) in bagList" :key="index">
+			<view class="main-every" v-for="(item, index) in bagOrJewelleryList" :key="index">
 				<view class="every-image">
-					<image v-if="item.pic" :src="item.pic" mode="aspectFill" @click="checkDetails(item)">
+					<image v-if="item.img" :src="item.img" mode="aspectFill" @click="checkDetails(item)">
 					</image>
 				</view>
 				<view class="every-main">
 					<view class="main-model">{{ item.name }}</view>
 					<view class="main-price"><text
-							style="font-size: 22rpx">{{ item.currency }}</text>{{ " " + formatNumberRgx(item.hkdPriceIndi) }}
+							style="font-size: 22rpx">{{ item.currency }}</text>{{ " " + formatNumberRgx(item.sellPrice) }}
 					</view>
 				</view>
 			</view>
@@ -80,7 +80,7 @@
 				haveData: 1,
 				imgUrl: this.$baseUrl,
 				page: 1,
-				bagList: [],
+				bagOrJewelleryList: [],
 				modelList: [],
 				haveMore: 0,
 
@@ -111,7 +111,7 @@
 		},
 		onPullDownRefresh() {
 			this.page = 1;
-			this.bagList = [];
+			this.bagOrJewelleryList = [];
 			this.haveMore = 0;
 			this.getList();
 			uni.stopPullDownRefresh();
@@ -266,14 +266,14 @@
 						this.modelList = res.data.modelList;
 						this.slogan = res.data.slogan;
 
-						if (res.data.bagList.length == 0) {
+						if (res.data.bagOrJewelleryList.length == 0) {
 							this.haveMore = 1;
 						} else {
-							let list = this.bagList.concat(res.data.bagList);
-							this.bagList = list;
+							let list = this.bagOrJewelleryList.concat(res.data.bagOrJewelleryList);
+							this.bagOrJewelleryList = list;
 						}
 
-						if (this.bagList.length == 0) {
+						if (this.bagOrJewelleryList.length == 0) {
 							this.haveData = 0;
 							uni.showToast({
 								icon: "none",

@@ -41,6 +41,21 @@
 .content .inventory-top .item.data-v-3d0c9012 {
   padding: 0 30rpx;
 }
+.content .inventory-top .mine-title.data-v-3d0c9012 {
+  height: 44px;
+  padding: 0 40rpx;
+  display: flex;
+  align-items: center;
+}
+.content .inventory-top .mine-title .search-input.data-v-3d0c9012 {
+  width: 400rpx;
+  padding: 10rpx 20rpx;
+  margin-left: 20rpx;
+  background-color: #f6f6f6;
+  border-radius: 30px;
+  text-align: center;
+  font-size: 24rpx;
+}
 .content .inventory-top .inputs.data-v-3d0c9012 {
   margin-top: 40rpx;
 }
@@ -77,7 +92,7 @@
 }
 .content .inventory-main.data-v-3d0c9012 {
   margin-top: 30rpx;
-  padding: 400rpx 30rpx 30rpx;
+  padding: 460rpx 30rpx 30rpx;
 }
 .content .inventory-main .inventory-num.data-v-3d0c9012 {
   margin-bottom: 20rpx;
@@ -120,6 +135,7 @@
   border-radius: 30rpx;
 }
 .content .inventory-main .plantList .plant .item .row .cs.data-v-3d0c9012 {
+  margin-top: 10rpx;
   font-size: 22rpx;
 }
 .content .inventory-main .plantList .plant .line.data-v-3d0c9012 {

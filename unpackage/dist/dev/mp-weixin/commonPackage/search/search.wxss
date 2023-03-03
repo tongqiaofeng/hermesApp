@@ -60,12 +60,13 @@
   font-size: 24rpx;
 }
 .search-container .search-top .search-filter.data-v-55d139c6 {
-  padding: 48rpx 80rpx 20rpx;
+  padding: 20rpx 80rpx 20rpx;
   display: flex;
   justify-content: space-between;
 }
 .search-container .search-top .search-filter .filter-every .every-main.data-v-55d139c6 {
   display: flex;
+  align-items: center;
 }
 .search-container .search-top .search-filter .filter-every .every-font.data-v-55d139c6 {
   font-size: 30rpx;
@@ -129,7 +130,7 @@
   box-sizing: border-box;
 }
 .search-container .search-main.data-v-55d139c6 {
-  margin-top: 280rpx;
+  margin-top: 200rpx;
   padding: 0 20rpx;
 }
 .search-container .search-main .main-container.data-v-55d139c6 {

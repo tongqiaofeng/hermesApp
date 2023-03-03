@@ -43,6 +43,9 @@
   font-size: 28rpx;
   margin-bottom: 20rpx;
 }
+.step .row {
+  display: flex;
+}
 .step .item {
   margin-bottom: 40rpx;
   color: #666666;
