@@ -392,12 +392,8 @@
 			// 确定修改
 			updateAddrSure() {
 				uni.request({
-					url: this.$baseUrl + "/order/api/orderAddressSave",
-					method: "POST",
-					data: {
-						orderId: this.orderDetail.id,
-						addressId: this.orderDetail.addressMsg.id
-					},
+					url: this.$baseUrl + "/order/api/orderAddressSave?orderId=" + this.orderDetail.id +
+						"&addressId=" + this.orderDetail.addressMsg.id,
 					header: {
 						"content-type": "application/json",
 						token: uni.getStorageSync("token"),

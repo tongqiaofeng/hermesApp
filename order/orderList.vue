@@ -24,7 +24,7 @@
 						<view v-else class="order-list">
 							<view class="list-every" v-for="(item, index) in item2.orderList" :key="index">
 								<view class="every-top">
-									<text class="top-left">{{ "订单编号：" + item.outTradeNo }}</text>
+									<text class="top-left">{{ item.outTradeNo }}</text>
 									<text class="top-right">{{ statusDecide(item.orderStatus) }}</text>
 								</view>
 								<view class="every-main">
@@ -33,19 +33,24 @@
 										<view class="msg-container">
 											<view class="msg-img" v-if="items.productCategory == 1">
 												<image v-if="items.pic" :src="items.pic" mode="aspectFill"></image>
-												<image v-else src="../static/imgs/common/nopic.jpg" mode="aspectFill"></image>
+												<image v-else src="../static/imgs/common/nopic.jpg" mode="aspectFill">
+												</image>
 											</view>
 											<view class="msg-img" v-if="items.productCategory == 2">
-												<image v-if="items.pic" :src="imgUrl + '/file/small/' + items.pic.trim()" mode="aspectFill">
+												<image v-if="items.pic"
+													:src="imgUrl + '/file/small/' + items.pic.trim()" mode="aspectFill">
 												</image>
-												<image v-else src="../static/imgs/common/nopic.jpg" mode="aspectFill"></image>
+												<image v-else src="../static/imgs/common/nopic.jpg" mode="aspectFill">
+												</image>
 											</view>
 											<view class="msg-img" v-if="items.productCategory == 3">
-												<image v-if="items.pic" :src="watchUrl + items.pic.trim()" mode="aspectFill">
+												<image v-if="items.pic" :src="watchUrl + items.pic.trim()"
+													mode="aspectFill">
 												</image>
-												<image v-else src="../static/imgs/common/nopic.jpg" mode="aspectFill"></image>
+												<image v-else src="../static/imgs/common/nopic.jpg" mode="aspectFill">
+												</image>
 											</view>
-											
+
 											<view class="msg-data">
 												<view class="data-name">{{ items.productName }}</view>
 												<view class="data-price">
@@ -350,7 +355,8 @@
 				// #endif
 				// #ifdef APP-PLUS
 				uni.navigateTo({
-					url: "./orderPayType?id=" + this.payId + "&price=" + this.payPrice + "&priceUs=" + item.productAmountTotalUs
+					url: "./orderPayType?id=" + this.payId + "&price=" + this.payPrice + "&priceUs=" + item
+						.productAmountTotalUs
 				})
 				// #endif
 			},

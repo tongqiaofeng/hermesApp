@@ -220,12 +220,6 @@
 					<image class="index-img" src="../static/imgs/details/index.png" mode="aspectFit"></image>
 					<view class="index-font">首页</view>
 				</view>
-				<!-- <button open-type="contact" :plain="true" show-message-card="true" :send-message-title="bagDetails.name"
-					:send-message-img="imgSrc[0]" :send-message-path="/hermes/details?id=${detailId}`"
-					class="serviceButton">
-					<image class="index-img" src="../static/imgs/details/service.png" mode="aspectFill"></image>
-					<view class="index-font">客服</view>
-				</button> -->
 				<view class="left-index" @click="serviceClick">
 					<image class="index-img" src="../static/imgs/details/service.png" mode="aspectFit"></image>
 					<view class="index-font">客服</view>
@@ -906,17 +900,6 @@
 
 			.bottom-left {
 				display: flex;
-
-				.serviceButton {
-					margin-right: 40rpx;
-					padding: 0;
-					line-height: unset;
-					border: none;
-					display: flex;
-					flex-direction: column;
-					justify-content: space-between;
-					align-items: center;
-				}
 
 				.left-index,
 				.left-collect {

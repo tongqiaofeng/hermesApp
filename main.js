@@ -5,15 +5,15 @@ import Chat from "@/static/js/chat.js";
 
 Vue.config.productionTip = false
 
-Vue.prototype.$baseUrl = 'http://192.168.0.164:8081';
-Vue.prototype.$baseFileUrl = 'http://192.168.0.164:8081/stock';
-Vue.prototype.$chatServerUrl = 'ws://192.168.0.164:8090/chat';
+// Vue.prototype.$baseUrl = 'http://192.168.0.164:8081';
+// Vue.prototype.$baseFileUrl = 'http://192.168.0.164:8081/stock';
+// Vue.prototype.$chatServerUrl = 'ws://192.168.0.164:8090/chat';
 
-/* 
+
 Vue.prototype.$baseUrl = 'https://hk.wistechx.cn/HermesNewApi';
 Vue.prototype.$baseFileUrl = 'http://test.wistechx.cn:9004/stock';
 Vue.prototype.$baseFileUrl = 'https://hk.wistechx.cn/HermesApi';
-*/
+
 
 // Vue.prototype.$baseUrl = 'https://hk.wistechx.cn/HermesNewApi';
 // Vue.prototype.$baseFileUrl = 'https://hk.wistechx.cn/HermesApi';
@@ -106,11 +106,11 @@ Vue.prototype.setUserInfo = function(ret) {
 	uni.setStorageSync("totalIntegral", userInfo.totalIntegral);
 
 	//WebSocket
-	if (getApp().globalData.g_chat == null) {
-		getApp().globalData.g_chat = new Chat(this.$chatServerUrl, "TopTime", "pages/list", "chat/chat", 2);
-	}
-	getApp().globalData.g_chat.setUserInfo(userInfo.userId, userInfo.userToken, userInfo.userNick, userInfo
-		.userHeadPic);
+	// if (getApp().globalData.g_chat == null) {
+	// 	getApp().globalData.g_chat = new Chat(this.$chatServerUrl, "TopTime", "pages/list", "chat/chat", 2);
+	// }
+	// getApp().globalData.g_chat.setUserInfo(userInfo.userId, userInfo.userToken, userInfo.userNick, userInfo
+	// 	.userHeadPic);
 }
 
 //创建临时聊天
