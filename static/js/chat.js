@@ -483,6 +483,7 @@ sendMsgToUserCmd(userId, content, type) {
 		receiver: userId,
 		contentType: type,
 		contentText: content,
+		senderName: this.userName,
 		msgInfo: this.getMsgUUID()
 	}
 	console.log('message')
